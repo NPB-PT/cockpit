@@ -413,6 +413,8 @@
       title="Relit Outlook et vos dossiers, puis recalcule le cockpit (comme Lancer_Corrige.bat)">Actualiser</button>
     <button class="btn" id="btn-tel" type="button" hidden
       title="Ouvrir le cockpit sur votre téléphone (QR code)">Téléphone</button>
+    <button class="btn btn-actu" id="btn-maj" type="button" hidden
+      title="Relit les dernières données envoyées par le PC">Mettre à jour</button>
     <button class="btn" id="btn-rech" type="button">Changer</button>
     <button class="btn" id="btn-theme" type="button">Thème</button>
   </div>
@@ -2309,32 +2311,57 @@ async function demarrerTelephone(){
   const sous = $("#accueil > p"); sous.textContent = "Chargement des données…";
   const echec = texte => { sous.textContent = texte; sous.style.color = "var(--crit)"; };
   if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
-  const cle = cleTelephone();
-  if(!cle) return echec("Clé absente : ouvrez l'application avec le QR code du cockpit, sur le PC (bouton Téléphone).");
+  if(!cleTelephone()) return echec("Clé absente : ouvrez l'application avec le QR code du cockpit, sur le PC (bouton Téléphone).");
   try{
-    if(!window.crypto?.subtle || typeof DecompressionStream === "undefined")
-      throw new Error("navigateur trop ancien : mettez l'iPhone à jour (iOS 16.4 ou plus récent)");
-    const rep = await fetch(window.TELEPHONE.donnees, {cache:"no-cache"});
-    if(!rep.ok) throw new Error(`données introuvables (réponse ${rep.status})`);
-    const brut = new Uint8Array(await rep.arrayBuffer());
-    if(String.fromCharCode(...brut.slice(0,4)) !== "NPB1") throw new Error("fichier de données inconnu");
-    const k = await crypto.subtle.importKey("raw", cle, "AES-GCM", false, ["decrypt"]);
-    let clair;
-    try{
-      clair = await crypto.subtle.decrypt({name:"AES-GCM", iv:brut.slice(4,16),
-        additionalData:new TextEncoder().encode("cockpit-pt-v1")}, k, brut.slice(16));
-    }catch(_){ throw new Error("clé incorrecte : scannez à nouveau le QR code du cockpit"); }
-    const texte = await new Response(new Blob([clair]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
-    const p = JSON.parse(texte);
-    if(!await charger({name:p.nom, arrayBuffer:async()=>({feuilles:p.feuilles})}))
-      throw new Error($("#err").textContent || "classeur illisible");
+    await chargerDonneesTelephone(false);
     document.title = "Cockpit NEW PREFA";
-    $("#source").textContent = `Données du ${p.genere}` + (navigator.onLine===false ? " · hors connexion" : "");
+    $("#btn-maj").hidden = false;
   }catch(e){
     echec(navigator.onLine===false ? "Pas de réseau, et aucune donnée encore gardée sur ce téléphone."
                                    : "Données non chargées : " + e.message + ".");
   }
 }
+let _majTelephone = 0;
+async function chargerDonneesTelephone(garderVue){
+  const cle = cleTelephone();
+  if(!cle) throw new Error("clé absente");
+  if(!window.crypto?.subtle || typeof DecompressionStream === "undefined")
+    throw new Error("navigateur trop ancien : mettez l'iPhone à jour (iOS 16.4 ou plus récent)");
+  const rep = await fetch(window.TELEPHONE.donnees, {cache:"no-cache"});
+  if(!rep.ok) throw new Error(`données introuvables (réponse ${rep.status})`);
+  const brut = new Uint8Array(await rep.arrayBuffer());
+  if(String.fromCharCode(...brut.slice(0,4)) !== "NPB1") throw new Error("fichier de données inconnu");
+  const k = await crypto.subtle.importKey("raw", cle, "AES-GCM", false, ["decrypt"]);
+  let clair;
+  try{
+    clair = await crypto.subtle.decrypt({name:"AES-GCM", iv:brut.slice(4,16),
+      additionalData:new TextEncoder().encode("cockpit-pt-v1")}, k, brut.slice(16));
+  }catch(_){ throw new Error("clé incorrecte : scannez à nouveau le QR code du cockpit"); }
+  const texte = await new Response(new Blob([clair]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
+  const p = JSON.parse(texte);
+  if(!await charger({name:p.nom, arrayBuffer:async()=>({feuilles:p.feuilles})}, {garderVue}))
+    throw new Error($("#err").textContent || "classeur illisible");
+  _majTelephone = Date.now();
+  $("#source").textContent = `Données du ${p.genere}` + (navigator.onLine===false ? " · hors connexion" : "");
+  return p.genere;
+}
+async function mettreAJourTelephone(silencieux=false){
+  const b = $("#btn-maj");
+  if(b.disabled) return;
+  b.disabled = true; b.textContent = "Mise à jour…";
+  try{
+    const genere = await chargerDonneesTelephone(true);
+    if(!silencieux) informer(navigator.onLine===false
+      ? `Pas de réseau : vous consultez les données du ${genere}, gardées sur le téléphone.`
+      : `À jour : données du ${genere}.`);
+  }catch(e){
+    if(!silencieux) informer("Mise à jour impossible : " + e.message, true);
+  }finally{ b.disabled = false; b.textContent = "Mettre à jour"; }
+}
+$("#btn-maj").addEventListener("click", ()=>mettreAJourTelephone());
+document.addEventListener("visibilitychange", ()=>{
+  if(window.TELEPHONE && !document.hidden && _majTelephone && Date.now()-_majTelephone > 120000) mettreAJourTelephone(true);
+});
 const chargerScript = src => new Promise((ok, ko)=>{
   if(document.querySelector(`script[src="${src}"]`) && window.qrcode) return ok();
   const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = ko; document.head.append(s); });
