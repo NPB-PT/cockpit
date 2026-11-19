@@ -1,0 +1,2375 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cockpit">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F5F5F7">
+<link rel="apple-touch-icon" href="icone-180.png">
+<title>Revue Post-Tension</title>
+<link rel="icon" href="icone-180.png">
+<style>
+  :root{
+    --bg:#F5F5F7; --surface:#FFFFFF; --surface-2:#FAFAFC; --hairline:#E3E3E6;
+    --ink:#1D1D1F; --ink-2:#4B4B50; --muted:#86868B;
+    --accent:#0071E3; --accent-soft:#E8F1FD;
+    --pos:#1D8A46; --pos-soft:#E6F4EB;
+    --warn:#B25000; --warn-soft:#FDF0E6;
+    --crit:#D70015; --crit-soft:#FDEAEC;
+    --serie-1:#2a78d6; --serie-2:#eb6834;       
+    --shadow:0 1px 2px rgba(0,0,0,.04), 0 8px 28px -10px rgba(0,0,0,.10);
+    --shadow-lg:0 2px 6px rgba(0,0,0,.05), 0 20px 50px -20px rgba(0,0,0,.18);
+    --r:18px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#000000; --surface:#1C1C1E; --surface-2:#2C2C2E; --hairline:#38383A;
+      --ink:#F5F5F7; --ink-2:#D1D1D6; --muted:#8E8E93;
+      --accent:#2997FF; --accent-soft:#12283F;
+      --pos:#30D158; --pos-soft:#11301B;
+      --warn:#FF9F0A; --warn-soft:#3A2A0A;
+      --crit:#FF453A; --crit-soft:#3B1513;
+      --serie-1:#3987e5; --serie-2:#d95926;
+      --shadow:0 1px 2px rgba(0,0,0,.5), 0 8px 28px -10px rgba(0,0,0,.7);
+      --shadow-lg:0 2px 6px rgba(0,0,0,.6), 0 20px 50px -20px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#000000; --surface:#1C1C1E; --surface-2:#2C2C2E; --hairline:#38383A;
+    --ink:#F5F5F7; --ink-2:#D1D1D6; --muted:#8E8E93;
+    --accent:#2997FF; --accent-soft:#12283F;
+    --pos:#30D158; --pos-soft:#11301B;
+    --warn:#FF9F0A; --warn-soft:#3A2A0A;
+    --crit:#FF453A; --crit-soft:#3B1513;
+    --serie-1:#3987e5; --serie-2:#d95926;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 8px 28px -10px rgba(0,0,0,.7);
+    --shadow-lg:0 2px 6px rgba(0,0,0,.6), 0 20px 50px -20px rgba(0,0,0,.9);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:Figtree,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:15px; line-height:1.47; letter-spacing:-.006em;
+    -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums}
+  h1,h2,h3{margin:0; font-weight:600; letter-spacing:-.022em; text-wrap:balance}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px}
+  @media(max-width:600px){.wrap{padding:0 16px}}
+  [hidden]{display:none !important}
+  header{position:sticky; top:0; z-index:40;
+    background:color-mix(in srgb,var(--bg) 82%,transparent); backdrop-filter:saturate(180%) blur(20px)}
+  .bar{display:flex; align-items:center; gap:16px; padding:14px 0; flex-wrap:wrap}
+  .brand{display:flex; align-items:center; gap:11px; margin-right:auto}
+  .brand b{font-size:16px; font-weight:600; letter-spacing:-.02em}
+  .brand span{font-size:12px; color:var(--muted); display:block; font-weight:400}
+  .dot{width:9px; height:9px; border-radius:50%; flex:none}
+  .logo{background:url("data:image/png;base64,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") center/contain no-repeat}
+  .marque{position:relative; flex:none; width:34px; height:34px}
+  .brand .marque .dot{position:absolute; right:-3px; bottom:-3px; width:12px; height:12px;
+    box-shadow:0 0 0 2px var(--bg)}
+  .logo-accueil{width:88px; height:88px; margin:0 auto 22px}
+  .btn{font:inherit; font-size:13.5px; font-weight:500; color:var(--accent); background:none;
+    border:0; border-radius:980px; padding:7px 14px; cursor:pointer; transition:background .18s}
+  .btn:hover{background:var(--accent-soft)}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .btn-plein{background:var(--accent); color:#fff; padding:11px 22px; font-size:15px; font-weight:500}
+  .btn-plein:hover{background:var(--accent); filter:brightness(1.08)}
+  .seg{display:inline-flex; background:var(--surface-2); border-radius:980px; padding:3px; gap:2px;
+    box-shadow:inset 0 0 0 1px var(--hairline)}
+  .seg button{font:inherit; font-size:13.5px; font-weight:500; color:var(--ink-2); background:none;
+    border:0; border-radius:980px; padding:7px 16px; cursor:pointer; transition:.18s; white-space:nowrap}
+  .seg button[aria-selected="true"]{background:var(--surface); color:var(--ink); box-shadow:var(--shadow)}
+  .seg button:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+  @media(max-width:700px){.seg{width:100%; overflow-x:auto}}
+  .accueil{max-width:600px; margin:0 auto; padding:96px 24px 120px; text-align:center}
+  .accueil h1{font-size:clamp(32px,5vw,44px); line-height:1.08; margin-bottom:14px; letter-spacing:-.03em}
+  .accueil p{color:var(--muted); font-size:17px; max-width:44ch; margin:0 auto 32px}
+  .depot{border:2px dashed var(--hairline); border-radius:26px; padding:54px 32px; background:var(--surface);
+    transition:border-color .2s, transform .2s}
+  .depot.over{border-color:var(--accent); transform:scale(1.01)}
+  .pas{display:grid; gap:1px; margin-top:34px; background:var(--hairline);
+    border-radius:16px; overflow:hidden; text-align:left}
+  .pas div{background:var(--surface); padding:15px 20px; font-size:14px; color:var(--muted)}
+  .pas div b{display:block; color:var(--ink); font-weight:600; font-size:15px; margin-bottom:1px}
+  code{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:13px;
+    background:var(--surface-2); border-radius:6px; padding:2px 7px}
+  .verdict{background:var(--surface); border-radius:26px; box-shadow:var(--shadow-lg);
+    padding:44px 44px 38px; margin:28px 0 22px}
+  @media(max-width:700px){.verdict{padding:30px 22px 26px}}
+  .verdict-top{display:grid; grid-template-columns:auto 1fr; gap:42px; align-items:center}
+  @media(max-width:820px){.verdict-top{grid-template-columns:1fr; gap:26px; text-align:center}}
+  .score-bloc{display:flex; align-items:baseline; gap:12px; justify-content:center}
+  .score{font-size:92px; font-weight:600; line-height:.92; letter-spacing:-.045em}
+  .score-sur{font-size:22px; color:var(--muted); font-weight:500}
+  .note{display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px;
+    border-radius:14px; font-size:24px; font-weight:700; letter-spacing:-.02em; margin-top:12px}
+  .verdict h1{font-size:clamp(21px,2.4vw,27px); line-height:1.24; margin-bottom:10px}
+  .verdict p{margin:0; color:var(--muted); font-size:15.5px; max-width:58ch}
+  @media(max-width:820px){.verdict p{margin:0 auto}}
+  .anneaux{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:38px;
+    padding-top:32px; border-top:1px solid var(--hairline)}
+  @media(max-width:820px){.anneaux{grid-template-columns:repeat(2,1fr); gap:20px}}
+  @media(max-width:460px){.anneaux{grid-template-columns:1fr}}
+  .anneau{display:flex; gap:14px; align-items:center}
+  .anneau svg{flex:none}
+  .anneau .t{font-size:14px; font-weight:600; letter-spacing:-.01em}
+  .anneau .v{font-size:13px; color:var(--muted); margin-top:1px}
+  section{margin-bottom:22px}
+  .carte{background:var(--surface); border-radius:var(--r); box-shadow:var(--shadow); overflow:hidden}
+  .carte-tete{padding:20px 24px 4px}
+  .carte-tete h2{font-size:19px; letter-spacing:-.02em}
+  .carte-tete p{margin:4px 0 0; font-size:13.5px; color:var(--muted)}
+  .carte-corps{padding:18px 24px 22px}
+  .deux{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+  @media(max-width:980px){.deux{grid-template-columns:1fr}}
+  .kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:22px}
+  .kpi{background:var(--surface); border-radius:var(--r); box-shadow:var(--shadow); padding:20px 22px}
+  .kpi .k{font-size:13px; color:var(--muted); font-weight:500}
+  .kpi .v{font-size:30px; font-weight:600; letter-spacing:-.03em; margin-top:7px; line-height:1.1}
+  .kpi .d{font-size:13px; color:var(--muted); margin-top:5px}
+  .lignes{display:grid; gap:14px}
+  .ligne{display:grid; grid-template-columns:200px 1fr 130px; gap:16px; align-items:center; font-size:14px}
+  @media(max-width:760px){.ligne{grid-template-columns:110px 1fr 92px; gap:10px; font-size:13px}}
+  .piste{height:8px; border-radius:980px; background:var(--surface-2); position:relative; overflow:hidden}
+  .piste i{position:absolute; inset:0 auto 0 0; border-radius:980px}
+  .val{text-align:right; color:var(--muted)}
+  .val b{color:var(--ink); font-weight:600}
+  .defile{overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:14px}
+  th,td{padding:12px 16px; text-align:right; white-space:nowrap}
+  th.l,td.l{text-align:left}
+  thead th{font-size:12.5px; font-weight:500; color:var(--muted); cursor:pointer; user-select:none;
+    border-bottom:1px solid var(--hairline); position:sticky; top:0; background:var(--surface)}
+  thead th:hover{color:var(--accent)}
+  tbody td{border-bottom:1px solid var(--hairline)}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:var(--surface-2)}
+  tfoot td{font-weight:600; border-top:1px solid var(--hairline)}
+  .sous{font-size:12.5px; color:var(--muted); font-weight:400; white-space:nowrap}
+  #t-com td:nth-child(1), #t-aff td:nth-child(-n+3), #t-perf td:nth-child(1), #t-liv td:nth-child(1),
+  #t-liv td:nth-child(3), #t-ch td:nth-child(1), #t-fac td:nth-child(1), #t-detail td:nth-child(-n+2), #t-stk td:nth-child(1),
+  #t-mvt td:nth-child(4), #t-mvt td:nth-child(6), #t-his td:nth-child(2){white-space:normal; min-width:150px}
+  .statut-ligne{display:inline-flex; align-items:center; white-space:nowrap}
+  .pas-de{padding:44px; text-align:center; color:var(--muted); font-size:14.5px}
+  .badge{display:inline-flex; align-items:center; padding:3px 10px; border-radius:980px; white-space:nowrap;
+    font-size:12.5px; font-weight:600; letter-spacing:-.005em}
+  .b-pos{background:var(--pos-soft); color:var(--pos)}
+  .b-warn{background:var(--warn-soft); color:var(--warn)}
+  .b-crit{background:var(--crit-soft); color:var(--crit)}
+  .b-neutre{background:var(--surface-2); color:var(--muted)}
+  .constats{display:grid; gap:1px; background:var(--hairline); border-radius:14px; overflow:hidden;
+    max-height:390px; overflow-y:auto}
+  .constat{background:var(--surface); padding:13px 18px; display:grid;
+    grid-template-columns:96px 88px 1fr; gap:14px; align-items:start; font-size:13.5px}
+  @media(max-width:720px){.constat{grid-template-columns:1fr; gap:5px}}
+  .constat .r{color:var(--muted); font-size:12.5px}
+  select,input[type=search]{font:inherit; font-size:14px; padding:8px 13px; border-radius:11px;
+    border:1px solid var(--hairline); background:var(--surface); color:var(--ink); min-width:0}
+  select:focus-visible,input:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+  .filtres{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:20px}
+  .choix{position:relative; display:inline-flex; align-items:center; border-radius:980px; vertical-align:middle}
+  .choix select{appearance:none; -webkit-appearance:none; font:inherit; font-size:12.5px; font-weight:600;
+    letter-spacing:-.005em; color:inherit; background:transparent; border:0; border-radius:980px;
+    padding:4px 27px 4px 11px; cursor:pointer}
+  .choix::after{content:""; position:absolute; right:11px; top:50%; width:5px; height:5px;
+    border:solid currentColor; border-width:0 1.6px 1.6px 0; transform:translateY(-70%) rotate(45deg);
+    pointer-events:none; opacity:.75}
+  .choix:hover{box-shadow:inset 0 0 0 1px currentColor}
+  .choix select:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .choix select option{color:var(--ink); background:var(--surface); font-weight:400}
+  .mini{font:inherit; font-size:15px; line-height:1; width:26px; height:26px; border-radius:50%; border:0;
+    background:none; color:var(--muted); cursor:pointer; margin-left:3px; vertical-align:middle}
+  .mini:hover{background:var(--accent-soft); color:var(--accent)}
+  .mini:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+  .bandeau{margin:24px 0 0; padding:14px 18px; border-radius:14px; background:var(--warn-soft);
+    color:var(--ink); font-size:14px; line-height:1.45; display:flex; gap:12px; align-items:flex-start}
+  .bandeau[hidden]{display:none}
+  .bandeau b{font-weight:600}
+  .bandeau .p{flex:none; width:8px; height:8px; border-radius:50%; background:var(--warn); margin-top:6px}
+  .toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:60;
+    max-width:min(92vw,600px); padding:11px 18px; border-radius:14px; background:var(--ink); color:var(--bg);
+    font-size:14px; font-weight:500; box-shadow:var(--shadow-lg)}
+  .toast.err{background:#C4001A; color:#fff}
+  .carte-tete.outils{display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; justify-content:space-between}
+  .note-pied{padding:14px 24px 0; font-size:13.5px; color:var(--muted)}
+  .note-pied b{color:var(--ink); font-weight:600}
+  details.histo{padding:6px 24px 18px; font-size:13.5px}
+  details.histo summary{cursor:pointer; color:var(--accent); font-weight:500; padding:8px 0; width:fit-content}
+  details.histo summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px}
+  .fbtn{font:inherit; width:22px; height:22px; padding:0; border:0; border-radius:7px; background:none;
+    color:var(--muted); cursor:pointer; vertical-align:middle; display:inline-flex; align-items:center;
+    justify-content:center; opacity:.5; margin:-3px 0 -1px 5px}
+  th:not(.l) .fbtn{position:absolute; right:0; top:50%; transform:translateY(-50%); width:16px;
+    margin:0; border-radius:5px}
+  .fbtn svg{width:12px; height:12px}
+  th:hover .fbtn, .fbtn:focus-visible, .fbtn.actif, .fbtn[aria-expanded="true"]{opacity:1}
+  .fbtn:hover, .fbtn[aria-expanded="true"]{background:var(--surface-2); color:var(--ink)}
+  .fbtn.actif, .fbtn.actif:hover{background:var(--accent); color:#fff}
+  .fbtn:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+  .fbar{padding:10px 24px 0; font-size:13.5px; color:var(--muted); display:flex; gap:6px;
+    align-items:center; flex-wrap:wrap}
+  .fbar b{color:var(--ink); font-weight:600}
+  .carte-tete .fbar{padding:0; margin:0 -14px -7px auto}
+  .carte-tete .boutons{display:flex; gap:4px; flex-wrap:wrap; margin:0 -14px -7px auto}
+  .carte-tete .boutons + .fbar{margin-left:14px}
+  .fpan{position:absolute; z-index:35; width:310px; max-width:calc(100vw - 24px); background:var(--surface);
+    color:var(--ink); border:1px solid var(--hairline); border-radius:14px; box-shadow:var(--shadow-lg);
+    padding:14px 14px 8px; font-size:13.5px; text-align:left}
+  .fpan h3{font-size:13px; letter-spacing:0; margin-bottom:10px}
+  .fpan input[type=search], .fpan input[type=text]{width:100%; font:inherit; font-size:13.5px;
+    padding:7px 10px; border-radius:9px; border:1px solid var(--hairline); background:var(--surface);
+    color:var(--ink)}
+  .fpan input[aria-invalid]{border-color:var(--crit)}
+  .fpan input[type=checkbox]{accent-color:var(--accent); width:15px; height:15px; flex:none; margin:0}
+  .fpan .liste{max-height:252px; overflow-y:auto; margin:8px -6px 0; padding:0 2px}
+  .fpan .liste label{display:flex; align-items:flex-start; gap:9px; padding:5px 6px; border-radius:7px;
+    cursor:pointer; line-height:1.3}
+  .fpan .liste label:hover{background:var(--surface-2)}
+  .fpan .liste .t{white-space:normal; overflow-wrap:anywhere}
+  .fpan .liste input[type=checkbox]{margin-top:1px}
+  .fpan .liste .n{margin-left:auto; padding-left:8px; color:var(--muted); font-size:12px}
+  .fpan .liste .tout{color:var(--ink-2)}
+  .fpan .champs{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .fpan .champs label{display:grid; gap:5px; font-size:12.5px; color:var(--muted)}
+  .fpan .aide{margin:9px 0 0; font-size:12.5px; color:var(--muted)}
+  .fpan .pied{display:flex; justify-content:space-between; gap:8px; margin:10px -6px 0; padding-top:6px;
+    border-top:1px solid var(--hairline)}
+  .fpan .btn:disabled{color:var(--muted); cursor:default; background:none}
+  .btn[aria-pressed="true"]{background:var(--accent); color:#fff}
+  .btn-actu{background:var(--accent); color:#fff; padding:7px 16px}
+  .btn-actu:hover{background:var(--accent); filter:brightness(1.08)}
+  .btn-actu:disabled{background:var(--accent-soft); color:var(--accent); filter:none; cursor:default}
+  .actu{margin:20px 0 0; padding:16px 20px; border-radius:16px; background:var(--surface);
+    box-shadow:var(--shadow); font-size:14px; color:var(--ink)}
+  .actu.ok{background:var(--pos-soft)}
+  .actu.err{background:var(--crit-soft)}
+  .actu .tete{display:flex; align-items:center; justify-content:space-between; gap:12px;
+    font-weight:600; font-size:15px; min-height:30px}
+  .actu .etapes{display:grid; gap:6px; margin-top:8px}
+  .actu .etape{display:flex; gap:10px; align-items:baseline; color:var(--ink-2)}
+  .actu .etape .p{flex:none; width:16px; display:inline-flex; justify-content:center; font-weight:700}
+  .actu .etape.ok .p{color:var(--pos)}
+  .actu .etape.echec .p{color:var(--crit)}
+  .actu .etape.avertissement .p{color:var(--warn)}
+  .actu .etape.attente{color:var(--muted)}
+  .actu .etape .m{color:var(--muted)}
+  .actu .note-actu{margin-top:8px; color:var(--warn); font-size:13.5px}
+  .actu .journal-actu{margin-top:10px; font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:12px;
+    color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .actu .msg-actu{margin:10px 0 0}
+  .actu details{margin-top:10px}
+  .actu summary{cursor:pointer; color:var(--accent); font-weight:500; width:fit-content}
+  .actu pre{max-height:240px; overflow:auto; font-size:12px; background:var(--surface); border-radius:10px;
+    padding:10px 12px; margin:8px 0 0; white-space:pre-wrap; overflow-wrap:anywhere}
+  .tourne{display:inline-block; width:11px; height:11px; border:2px solid var(--accent-soft);
+    border-top-color:var(--accent); border-radius:50%; animation:tourne .8s linear infinite}
+  @keyframes tourne{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.tourne{animation:none}}
+  .chiffres{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); background:var(--surface);
+    border-radius:var(--r); box-shadow:var(--shadow); margin:24px 0 22px}
+  .chiffres > div{padding:18px 22px; border-left:1px solid var(--hairline); min-width:0}
+  .chiffres > div:first-child{border-left:0}
+  .chiffres .k{font-size:13px; color:var(--muted); font-weight:500}
+  .chiffres .v{font-size:28px; font-weight:600; letter-spacing:-.03em; margin-top:4px; line-height:1.15;
+    font-variant-numeric:proportional-nums}
+  .chiffres .v small{font-size:15px; font-weight:500; color:var(--muted); letter-spacing:-.01em; margin-left:5px}
+  .chiffres .d{font-size:13px; color:var(--muted); margin-top:3px}
+  @media(max-width:600px){.chiffres > div{padding:14px 14px} .chiffres .v{font-size:22px}
+    .chiffres .v small{font-size:13px; margin-left:3px}}
+  @media(max-width:860px){.chiffres{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .chiffres > div:nth-child(3){border-left:0}
+    .chiffres > div:nth-child(n+3){border-top:1px solid var(--hairline)}}
+  .duo{display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:20px; align-items:start;
+    margin-bottom:22px}
+  .duo > section{margin-bottom:0}
+  @media(max-width:980px){.duo{grid-template-columns:minmax(0,1fr)}}
+  .groupe{font-size:12.5px; font-weight:600; color:var(--muted); letter-spacing:0; margin:4px 0 2px;
+    display:flex; gap:8px; align-items:baseline}
+  .groupe + .ch{border-top:0}
+  .ch-bloc + .ch-bloc{margin-top:18px}
+  .ch{display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1.15fr) 112px; gap:18px; align-items:center;
+    padding:10px 6px; margin:0 -6px; border-top:1px solid var(--hairline); border-radius:10px; font-size:14px}
+  .ch:hover, .ch:focus-visible{background:var(--surface-2)}
+  .ch:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  .ch .nom b{display:block; font-weight:500; line-height:1.3}
+  .ch .nom span{display:block; font-size:12.5px; color:var(--muted); margin-top:1px}
+  .jauge{height:8px; border-radius:980px; background:var(--accent-soft); position:relative; overflow:hidden}
+  .jauge i{position:absolute; inset:0 auto 0 0; border-radius:980px; background:var(--accent)}
+  .jauge.nue{background:none}                     
+  .segments{display:flex; gap:2px; height:8px}
+  .segments i{flex-basis:0; min-width:3px; border-radius:980px}
+  .legende{display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin:-6px 0 8px}
+  .legende span{display:inline-flex; align-items:center; gap:6px}
+  .legende i{width:10px; height:10px; border-radius:3px; display:inline-block}
+  .ch.large{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) 126px}
+  .barre-outils{display:flex; gap:4px; flex-wrap:wrap; align-items:center; padding:0 10px 6px}
+  .barre-outils:not(:has(button:not([hidden]))){display:none}
+  .att-plus{margin:6px 0 0 -14px}
+  .att-ligne .choix{margin-top:-2px}
+  .liste-simple .att-ligne:first-child{border-top:0}
+  .pile{display:grid; gap:20px; align-content:start; min-width:0}
+  .pile > section{margin-bottom:0}
+  .graphe svg{display:block}
+  .graphe .grille{stroke:var(--hairline); stroke-width:1}
+  .graphe .base{stroke:var(--muted); stroke-opacity:.5; stroke-width:1}
+  .graphe .axe{font-size:11px; fill:var(--muted); font-family:inherit}
+  .graphe .etiq{font-size:11.5px; font-weight:600; fill:var(--ink); font-family:inherit}
+  .graphe .col{outline:none}
+  .graphe .col .bande{fill:transparent}
+  .graphe .col:hover .bande, .graphe .col:focus-visible .bande{fill:var(--surface-2)}
+  .graphe .col:focus-visible .bande{stroke:var(--accent); stroke-width:1.5}
+  .note-graphe{margin:12px 0 0; padding:9px 14px; border-radius:12px; background:var(--surface-2); font-size:13px;
+    color:var(--ink-2); display:flex; gap:6px 12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+  .note-graphe .btn{margin:-6px -10px}
+  .inv{margin-bottom:18px}
+  .inv-tete{font-size:13.5px; color:var(--muted); margin-bottom:8px}
+  .inv-tete b{color:var(--ink); font-weight:600}
+  .articles{columns:3 250px; column-gap:30px}
+  .articles .groupe{break-after:avoid; margin:14px 0 2px}
+  .articles .groupe:first-child{margin-top:0}
+  .art{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; align-items:center; padding:7px 6px;
+    margin:0 -6px; border-top:1px solid var(--hairline); border-radius:8px; break-inside:avoid; font-size:13.5px}
+  .groupe + .art{border-top:0}
+  .art:hover, .art:focus-visible{background:var(--surface-2)}
+  .art:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  .art .nom b{display:block; font-weight:500; line-height:1.3}
+  .art .nom span{display:block; font-size:12px; color:var(--muted); margin-top:1px}
+  .art .val{white-space:nowrap}
+  .ch .etat-ch{font-size:13px; color:var(--muted); line-height:1.35}
+  .ch .val{display:grid; justify-items:end; line-height:1.25}
+  .ch .val span{font-size:12.5px}
+  @media(max-width:700px){.ch{grid-template-columns:minmax(0,1fr) auto; row-gap:8px}
+    .ch > :nth-child(2){grid-column:1 / -1; order:3}}
+  .pied-carte{margin:16px 0 0; padding-top:14px; border-top:1px solid var(--hairline); font-size:13.5px;
+    color:var(--muted); display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+  .pied-carte .btn{margin:-6px -14px -6px 0}
+  .att + .att{margin-top:20px}
+  .att-tete{display:flex; gap:9px; align-items:center; flex-wrap:wrap; margin-bottom:4px}
+  .att-tete .t{font-size:13.5px; font-weight:600}
+  .att-tete .n{font-size:13px; color:var(--muted)}
+  .att-ligne{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:baseline;
+    padding:8px 0; border-top:1px solid var(--hairline); font-size:13.5px}
+  .att-tete + .att-ligne{border-top:0}
+  .att-ligne b{font-weight:500}
+  .att-ligne .sous{display:block; white-space:normal; margin-top:1px}
+  .att-ligne .val b{font-weight:600}
+  .att .note-att{font-size:12.5px; color:var(--muted); margin:2px 0 0}
+  details.pli{scroll-margin-top:84px}
+  details.pli > summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:14px;
+    padding:18px 24px; border-radius:var(--r)}
+  details.pli > summary::-webkit-details-marker{display:none}
+  details.pli > summary h2{font-size:19px; letter-spacing:-.02em}
+  details.pli > summary p{margin:3px 0 0; font-size:13.5px; color:var(--muted)}
+  details.pli > summary:hover h2{color:var(--accent)}
+  details.pli > summary:focus-visible{outline:2px solid var(--accent); outline-offset:-3px}
+  .chevron{margin-left:auto; flex:none; width:9px; height:9px; border:solid var(--muted);
+    border-width:0 2px 2px 0; transform:rotate(45deg); margin-top:-5px; transition:transform .18s}
+  details.pli[open] > summary .chevron{transform:rotate(-135deg); margin-top:3px}
+  details.pli[open] > summary{padding-bottom:6px}
+  details.pli .explic{padding:4px 24px 12px; margin:0; font-size:13.5px; color:var(--muted); max-width:92ch}
+  .bulle{position:fixed; z-index:70; pointer-events:none; width:max-content; max-width:320px;
+    background:var(--surface); color:var(--ink); border:1px solid var(--hairline); border-radius:12px;
+    box-shadow:var(--shadow-lg); padding:10px 13px; font-size:13px; line-height:1.35}
+  .bulle .bt{font-weight:600; margin-bottom:5px}
+  .bulle .bl{display:flex; gap:8px; align-items:baseline; margin-top:3px}
+  .bulle .bl b{font-weight:600; white-space:nowrap}
+  .bulle .bl span{color:var(--muted)}
+  .telephone #btn-actu, .telephone #btn-rech, .telephone #btn-tel, .telephone #depot, .telephone .pas,
+  .telephone [data-actualiser]{display:none !important}
+  .telephone .accueil{padding-top:72px}
+  .telephone .bar{gap:10px 12px; padding:12px 0 10px}
+  .telephone #btn-theme{display:none !important}
+  .telephone header{position:static; background:none; backdrop-filter:none}
+  .telephone .seg button{padding:7px 12px}
+  .voile{position:fixed; inset:0; z-index:80; background:rgba(0,0,0,.38); display:flex; align-items:center;
+    justify-content:center; padding:16px}
+  .fenetre{background:var(--surface); color:var(--ink); border-radius:20px; box-shadow:var(--shadow-lg);
+    width:min(450px,100%); max-height:calc(100vh - 32px); overflow:auto; padding:22px 24px 18px}
+  .fenetre h2{font-size:19px; margin-bottom:6px}
+  .fenetre p, .fenetre li{font-size:14px; color:var(--ink-2); line-height:1.45}
+  .fenetre ol{padding-left:20px; margin:10px 0 0}
+  .fenetre li + li{margin-top:4px}
+  .qr{display:flex; align-items:center; justify-content:center; min-height:240px; margin:14px 0 6px;
+    padding:12px; background:#fff; color:#1D1D1F; border-radius:14px; font-size:14px; text-align:center}
+  .qr svg{width:230px; height:230px; display:block}
+  .fenetre .pied{display:flex; justify-content:flex-end; gap:8px; margin-top:12px}
+  footer{padding:28px 0 56px; color:var(--muted); font-size:13px; text-align:center}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<header hidden id="entete">
+  <div class="wrap bar">
+    <div class="brand">
+      <span class="marque logo" role="img" aria-label="Logo Revue Post-Tension"><span class="dot" id="pastille"></span></span>
+      <div><b>Revue Post-Tension</b><span id="source">—</span></div>
+    </div>
+    <div class="seg" role="tablist">
+      <button role="tab" data-vue="fiabilite" aria-selected="true">Fiabilité</button>
+      <button role="tab" data-vue="commercial" aria-selected="false">Commercial</button>
+      <button role="tab" data-vue="travaux" aria-selected="false">Travaux</button>
+      <button role="tab" data-vue="facturation" aria-selected="false">Facturation</button>
+      <button role="tab" data-vue="stock" aria-selected="false">Stock</button>
+    </div>
+    <button class="btn btn-actu" id="btn-actu" type="button" hidden
+      title="Relit Outlook et vos dossiers, puis recalcule le cockpit (comme Lancer_Corrige.bat)">Actualiser</button>
+    <button class="btn" id="btn-tel" type="button" hidden
+      title="Ouvrir le cockpit sur votre téléphone (QR code)">Téléphone</button>
+    <button class="btn" id="btn-rech" type="button">Changer</button>
+    <button class="btn" id="btn-theme" type="button">Thème</button>
+  </div>
+</header>
+<main>
+  <div class="wrap"><div class="actu" id="actu" role="status" aria-live="polite" hidden></div></div>
+  <div class="accueil" id="accueil">
+    <div class="logo logo-accueil" role="img" aria-label="Logo Revue Post-Tension"></div>
+    <h1>Revue de vos chantiers post-tension</h1>
+    <p>Déposez le classeur de suivi. Rien n'est conservé : l'outil n'analyse que le fichier que vous lui donnez.</p>
+    <div class="depot" id="depot">
+      <button class="btn btn-plein" id="btn-choisir" type="button">Choisir le fichier</button>
+      <input type="file" id="fichier" accept=".xlsx,.xls" hidden>
+      <p style="margin:18px 0 0; font-size:14px">ou glissez-le ici</p>
+      <p id="err" style="color:var(--crit); font-weight:500; margin:14px 0 0; font-size:14px" hidden></p>
+      <button class="btn btn-actu" id="btn-actu-accueil" type="button" data-actualiser hidden
+        style="margin-top:14px">Actualiser : créer le fichier maintenant</button>
+    </div>
+    <div class="pas">
+      <div><b>1. Produisez le fichier</b>Double-cliquez sur <code>Lancer_Corrige.bat</code> : il crée COCKPIT_PT.xlsx.</div>
+      <div><b>2. Déposez-le</b>Onglets AFFAIRES, DEPENSES, FACTURES, LIVRAISONS, MENSUEL, STOCK, CONTROLE.</div>
+      <div><b>3. Lisez la fiabilité d'abord</b>Un chiffre ne vaut que ce que vaut sa source.</div>
+      <div><b>Plus simple : l'icône « Cockpit NEW PREFA » du Bureau</b>Le cockpit s'ouvre avec ses données, vos changements de statut sont enregistrés et le bouton Actualiser remplace Lancer_Corrige.bat.</div>
+    </div>
+  </div>
+  <div class="wrap" id="app" hidden>
+    <div class="bandeau" id="bandeau" role="status" hidden></div>
+    <div id="vue-fiabilite">
+      <div class="verdict">
+        <div class="verdict-top">
+          <div style="text-align:center">
+            <div class="score-bloc"><span class="score" id="score">—</span><span class="score-sur">/100</span></div>
+            <div class="note" id="note">—</div>
+          </div>
+          <div>
+            <h1 id="verdict-titre">—</h1>
+            <p id="verdict-texte">—</p>
+          </div>
+        </div>
+        <div class="anneaux" id="anneaux"></div>
+      </div>
+      <div class="kpis" id="k-fia"></div>
+      <div class="deux">
+        <section class="carte">
+          <div class="carte-tete"><h2>Origine de chaque dirham de coût</h2>
+            <p>Mesuré sur pièce, ou repris du budget de chiffrage faute de justificatif</p></div>
+          <div class="carte-corps"><div class="lignes" id="origine"></div></div>
+        </section>
+        <section class="carte">
+          <div class="carte-tete"><h2>Ce qu'il manque, par priorité</h2>
+            <p>Classé par montant de coût que la donnée permettrait de vérifier</p></div>
+          <div class="carte-corps"><div class="lignes" id="manques"></div></div>
+        </section>
+      </div>
+      <section class="carte">
+        <div class="carte-tete"><h2>Constats</h2><p id="n-constats">—</p></div>
+        <div class="carte-corps"><div class="constats" id="constats"></div></div>
+      </section>
+    </div>
+    <div id="vue-commercial" hidden>
+      <div class="filtres" style="margin-top:24px">
+        <select id="f-com"><option value="">Tous les commerciaux</option></select>
+        <select id="f-cli"><option value="">Toutes les entreprises</option></select>
+        <input type="search" id="f-rech" placeholder="Rechercher…" style="width:200px">
+        <button class="btn" id="f-reset" type="button">Réinitialiser</button>
+      </div>
+      <div class="chiffres" id="k-com" style="margin-top:0"></div>
+      <div class="duo">
+        <section class="carte">
+          <div class="carte-tete"><h2>Performance par commercial</h2>
+            <p>Surface proposée selon l'issue · transformation = gagné ÷ tranché · survolez un commercial pour le détail</p></div>
+          <div class="carte-corps">
+            <div class="legende" aria-hidden="true"><span><i style="background:var(--pos)"></i>Gagné</span>
+              <span><i style="background:var(--muted)"></i>En négociation</span>
+              <span><i style="background:var(--crit)"></i>Perdu</span></div>
+            <div id="com-perf"></div>
+          </div>
+        </section>
+        <section class="carte">
+          <div class="carte-tete"><h2>Points d'attention</h2><p id="com-att-sous">—</p></div>
+          <div class="carte-corps" id="com-attention"></div>
+        </section>
+      </div>
+      <div class="deux">
+        <section class="carte">
+          <div class="carte-tete"><h2>Négociations en cours</h2><p id="com-nego-sous">—</p></div>
+          <div class="carte-corps" id="com-nego"></div>
+        </section>
+        <section class="carte">
+          <div class="carte-tete"><h2>Principaux clients</h2><p>Part du chiffre d'affaires décroché · survolez un client pour le détail</p></div>
+          <div class="carte-corps" id="com-clients"></div>
+        </section>
+      </div>
+      <section class="carte">
+        <details class="pli" id="pli-aff">
+          <summary><div><h2>Toutes les affaires</h2><p id="n-aff">—</p></div><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="barre-outils">
+            <button class="btn" id="f-tr" type="button" aria-pressed="false" hidden
+              title="Affaires dont le statut n'est pas encore tranché dans le recensement">À trancher</button>
+            <button class="btn" id="f-vieux" type="button" aria-pressed="false" hidden
+              title="Offres en négociation dont l'offre date de plus de 6 mois">Sans réponse depuis 6 mois</button>
+            <button class="btn" id="f-mod" type="button" aria-pressed="false" hidden>Changés dans le cockpit</button>
+          </div>
+          <div class="defile"><table id="t-aff"><thead><tr>
+            <th class="l" data-k="affaire">Affaire</th><th class="l" data-k="client">Entreprise</th>
+            <th class="l" data-k="commercial">Commercial</th><th class="l" data-k="statut">Statut</th>
+            <th data-k="surface">Surface</th><th data-k="pu">PU</th><th data-k="ca">CA HT</th>
+            <th data-k="margeVendue">Marge vendue</th><th data-k="margeReelle">Marge estimée</th>
+          </tr></thead><tbody></tbody></table></div>
+          <div class="note-pied" id="orphelins" hidden></div>
+          <details class="histo" id="histo" hidden>
+            <summary>Historique des changements de statut</summary>
+            <div class="defile"><table id="t-his"><thead><tr>
+              <th class="l" data-k="decide_le">Choisi le</th><th class="l" data-k="affaire">Affaire</th>
+              <th class="l" data-k="statut_maitre">Fichier maître</th><th class="l" data-k="statut">Statut choisi</th>
+              <th class="l" data-k="suite">Suite</th></tr></thead><tbody></tbody></table></div>
+          </details>
+        </details>
+      </section>
+      <section class="carte">
+        <details class="pli" id="pli-com">
+          <summary><div><h2>Détail par commercial</h2><p>Gagnées, perdues, en négociation, transformation, conversion,
+            prix, marge et délai · <span style="color:var(--warn)">∗</span> moins de 3 affaires tranchées</p></div>
+            <span class="chevron" aria-hidden="true"></span></summary>
+          <div class="defile"><table id="t-com"><thead><tr>
+            <th class="l" data-k="nom">Commercial</th><th data-k="gagnees">Gagnées</th>
+            <th data-k="perdues">Perdues</th><th data-k="enNego">En négo</th>
+            <th data-k="surfaceGagnee">m² gagnés</th><th data-k="surfaceNego">m² en négo</th>
+            <th data-k="transformation">Transformation</th><th data-k="conversion">Conversion</th>
+            <th data-k="puMoyen">PU moyen</th><th data-k="margeMoy">Marge vendue</th>
+            <th data-k="delaiMoy">Délai</th></tr></thead><tbody></tbody></table></div>
+        </details>
+      </section>
+    </div>
+    <div id="vue-travaux" hidden>
+      <div class="chiffres" id="k-tvx"></div>
+      <div class="duo">
+        <section class="carte">
+          <div class="carte-tete"><h2>Chantiers en cours</h2>
+            <p>Avancement = surface facturée ÷ surface vendue · survolez un chantier pour le détail</p></div>
+          <div class="carte-corps" id="tvx-encours"></div>
+        </section>
+        <section class="carte">
+          <div class="carte-tete"><h2>Points d'attention</h2><p id="tvx-att-sous">—</p></div>
+          <div class="carte-corps" id="tvx-attention"></div>
+        </section>
+      </div>
+      <section class="carte">
+        <details class="pli" id="pli-ch">
+          <summary><div><h2>Tous les chantiers</h2><p id="n-ch">—</p></div><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="defile"><table id="t-ch"><thead><tr>
+            <th class="l" data-k="affaire">Chantier</th><th class="l" data-k="phase">Phase</th>
+            <th data-k="dateContrat">Contrat</th><th data-k="surface">Surface vendue</th>
+            <th data-k="surfaceFacturee">Facturée</th><th data-k="avancement">Avancement</th>
+            <th data-k="reste">Reste à facturer</th><th data-k="nBons">Bons livrés</th>
+            <th data-k="derniereLiv">Dernière livraison</th>
+          </tr></thead><tbody></tbody><tfoot></tfoot></table></div>
+        </details>
+      </section>
+      <section class="carte">
+        <details class="pli" id="pli-liv">
+          <summary><div><h2>Livraisons</h2><p id="n-liv">—</p></div><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="defile"><table id="t-liv"><thead><tr>
+            <th class="l" data-k="affaire">Chantier</th><th data-k="date">Date</th>
+            <th class="l" data-k="designation">Désignation</th><th data-k="quantite">Quantité</th>
+            <th class="l" data-k="bl">Bon de livraison</th>
+          </tr></thead><tbody></tbody><tfoot></tfoot></table></div>
+        </details>
+      </section>
+      <section class="carte">
+        <details class="pli" id="pli-cout">
+          <summary><div><h2>Budget et coût imputé</h2><p id="n-cout">—</p></div><span class="chevron" aria-hidden="true"></span></summary>
+          <p class="explic">Le coût imputé additionne la main d'œuvre pointée et l'amortissement du matériel, répartis
+            entre les chantiers actifs au prorata de la surface et des mois de chantier, et le budget de chiffrage
+            repris pour les autres familles tant qu'aucune pièce ne les justifie. Tant que la part réelle reste
+            faible, comparer ce coût au budget ne mesure pas la consommation du chantier : aucun indice de dérive
+            n'est donc calculé ici.</p>
+          <div class="defile"><table id="t-perf"><thead><tr>
+            <th class="l" data-k="affaire">Chantier</th><th data-k="avancement">Avancement</th>
+            <th data-k="budget">Budget</th><th data-k="reel">Coût imputé</th>
+            <th data-k="partReelle">Part réelle</th>
+          </tr></thead><tbody></tbody><tfoot></tfoot></table></div>
+        </details>
+      </section>
+    </div>
+    <div id="vue-facturation" hidden>
+      <div class="chiffres" id="k-fac"></div>
+      <div class="duo">
+        <div class="pile">
+          <section class="carte">
+            <div class="carte-tete"><h2>Facturation par mois</h2>
+              <p>Montant HT des factures datées (date du courriel « FACTURATION NPB ») · survolez un mois pour le détail</p></div>
+            <div class="carte-corps"><div class="graphe" id="fac-mois"></div><div id="fac-mois-note"></div></div>
+          </section>
+          <section class="carte">
+            <div class="carte-tete"><h2>Reste à facturer par chantier</h2><p id="fac-reste-sous">—</p></div>
+            <div class="carte-corps" id="fac-reste"></div>
+          </section>
+        </div>
+        <section class="carte">
+          <div class="carte-tete"><h2>Points d'attention</h2><p id="fac-att-sous">—</p></div>
+          <div class="carte-corps" id="fac-attention"></div>
+        </section>
+      </div>
+      <section class="carte">
+        <details class="pli" id="pli-fac">
+          <summary><div><h2>Facturation par chantier</h2><p id="n-fac-ch">—</p></div><span class="chevron" aria-hidden="true"></span></summary>
+          <p class="explic">% facturé = montant facturé ÷ marché ; % surface = surface facturée ÷ surface vendue. L'écart, en points,
+            est négatif quand la surface est facturée pour un montant inférieur au prix vendu (avance déduite, retenue ou prix
+            différent).</p>
+          <div class="defile"><table id="t-fac"><thead><tr>
+            <th class="l" data-k="affaire">Chantier</th><th data-k="ca">Marché</th>
+            <th data-k="facture">Facturé</th><th data-k="reste">Reste</th>
+            <th data-k="pctFacture">% facturé</th><th data-k="avancement">% surface</th>
+            <th data-k="decalage">Écart</th>
+          </tr></thead><tbody></tbody><tfoot></tfoot></table></div>
+        </details>
+      </section>
+      <section class="carte">
+        <details class="pli" id="pli-detail">
+          <summary><div><h2>Factures</h2><p id="n-fac">—</p></div><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="defile"><table id="t-detail"><thead><tr>
+            <th class="l" data-k="affaire">Chantier</th><th class="l" data-k="feuille">Pièce</th>
+            <th data-k="date">Date</th><th data-k="surface">Surface</th>
+            <th data-k="ht">Montant HT</th><th class="l" data-k="coherence">Code affaire</th>
+          </tr></thead><tbody></tbody><tfoot></tfoot></table></div>
+        </details>
+      </section>
+    </div>
+    <div id="vue-stock" hidden>
+      <div class="chiffres" id="k-stk"></div>
+      <section class="carte">
+        <div class="carte-tete"><h2>Stock par article</h2><p id="stk-sous">—</p></div>
+        <div class="carte-corps" id="stk-articles"></div>
+      </section>
+      <div class="duo">
+        <div class="pile">
+          <section class="carte">
+            <div class="carte-tete"><h2>Mouvements par mois</h2>
+              <p>Nombre de bons sur les 8 derniers mois · survolez un mois pour le détail</p></div>
+            <div class="carte-corps">
+              <div class="legende" aria-hidden="true"><span><i style="background:var(--serie-1)"></i>Bons de sortie</span>
+                <span><i style="background:var(--serie-2)"></i>Réceptions fournisseurs</span></div>
+              <div class="graphe" id="stk-mois"></div></div>
+          </section>
+          <section class="carte">
+            <div class="carte-tete"><h2>Sorties par chantier</h2><p id="stk-ch-sous">—</p></div>
+            <div class="carte-corps" id="stk-chantiers"></div>
+          </section>
+        </div>
+        <section class="carte">
+          <div class="carte-tete"><h2>Points d'attention</h2><p id="stk-att-sous">—</p></div>
+          <div class="carte-corps" id="stk-attention"></div>
+        </section>
+      </div>
+      <section class="carte">
+        <details class="pli" id="pli-stk">
+          <summary><div><h2>Tableau des articles</h2><p id="n-stk">—</p></div><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="defile"><table id="t-stk"><thead><tr>
+            <th class="l" data-k="article">Article</th><th data-k="inventaire">Inventaire</th>
+            <th data-k="entrees">Entrées</th><th data-k="sorties">Sorties</th><th data-k="retours">Retours</th>
+            <th data-k="stock">Stock</th><th data-k="seuil">Seuil</th><th class="l" data-k="etat">État</th>
+            <th data-k="prix">Prix d'achat</th><th data-k="valeur">Valeur</th>
+          </tr></thead><tbody></tbody><tfoot></tfoot></table></div>
+        </details>
+      </section>
+      <section class="carte">
+        <details class="pli" id="pli-mvt">
+          <summary><div><h2>Mouvements</h2><p id="n-mvt">—</p></div><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="defile"><table id="t-mvt"><thead><tr>
+            <th data-k="date">Date</th><th class="l" data-k="type">Type</th><th class="l" data-k="bon">Bon</th>
+            <th class="l" data-k="article">Article</th><th data-k="quantite">Quantité</th>
+            <th class="l" data-k="affaire">Chantier</th><th class="l" data-k="controle">Contrôle</th>
+          </tr></thead><tbody></tbody></table></div>
+        </details>
+      </section>
+    </div>
+    <footer id="pied">—</footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</main>
+<div class="fpan" id="fpan" role="dialog" aria-label="Filtre" hidden></div>
+<div class="bulle" id="bulle" role="tooltip" hidden></div>
+<script>window.TELEPHONE = {donnees: "donnees.bin"};</script>
+<script>
+const $ = s => document.querySelector(s);
+const fmt = (n,d=0) => n==null||!isFinite(n) ? "—" : n.toLocaleString("fr-FR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = (x,d=0) => x==null||!isFinite(x) ? "—" : (x*100).toFixed(d).replace(".",",")+" %";
+const norm = s => (s??"").toString().normalize("NFKD").replace(/[\u0300-\u036F]/g,"").trim().toUpperCase();
+const esc = s => String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const canon = s => { const n = norm(s);
+  return n.includes("DECROCH") ? (n.includes("NON") ? "Non d\u00E9croch\u00E9e" : "D\u00E9croch\u00E9e")
+       : n.includes("COURS") ? "En cours" : ""; };
+const nb = v => {
+  if(v==null||v==="") return null;
+  if(typeof v==="number") return isFinite(v) ? v : null;
+  let s = String(v).replace(/[\s\u00A0\u202F\u2007]/g,"").replace(/[^\d.,+-]/g,"");
+  if(!s) return null;
+  const dp = s.lastIndexOf("."), vg = s.lastIndexOf(",");
+  if(dp>=0 && vg>=0){                       // les deux : le DERNIER est le decimal
+    s = vg>dp ? s.replace(/\./g,"").replace(",",".") : s.replace(/,/g,"");
+  } else if(vg>=0){                         // groupes de 3 chiffres => milliers
+    s = /^[+-]?\d{1,3}(,\d{3})+$/.test(s) ? s.replace(/,/g,"") : s.replace(",",".");
+  } else if(dp>=0){
+    s = /^[+-]?\d{1,3}(\.\d{3})+$/.test(s) ? s.replace(/\./g,"") : s;
+  }
+  const n = parseFloat(s);
+  return isFinite(n) ? n : null; };
+const dt = v => {
+  if(v==null||v==="") return null;
+  if(v instanceof Date) return isNaN(v) ? null : v;
+  const s = String(v).trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);            // ISO
+  if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);          // jj/mm/aaaa (format du classeur)
+  if(m) return new Date(+m[3],+m[2]-1,+m[1]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2})$/);         // m/j/aa (format court anglo-saxon)
+  if(m) return new Date(2000+ +m[3], +m[1]-1, +m[2]);
+  const n = Number(s);                                     // numéro de série Excel
+  if(isFinite(n) && n>20000 && n<80000)
+    return new Date(Date.UTC(1899,11,30) + n*86400000);
+  return null;
+};
+const moisDe = d => d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}` : null;
+const JOUR = 86400000;
+const leJour = d => d ? d.toLocaleDateString("fr-FR") : "—";
+const court = d => !d ? "—" : d.toLocaleDateString("fr-FR", d.getFullYear()===new Date().getFullYear()
+  ? {day:"2-digit", month:"2-digit"} : {day:"2-digit", month:"2-digit", year:"2-digit"});
+const pluriel = (n, mot) => `${fmt(n)} ${mot}${n>1?"s":""}`;
+function ecoule(d){
+  if(!d) return "";
+  const j = Math.floor((Date.now()-d)/JOUR);
+  if(j<0) return "à venir";
+  return j<30 ? pluriel(j, "jour") : `${fmt(Math.round(j/30.4368))} mois`;
+}
+let D=null, etat={vue:"fiabilite", com:"", cli:"", rech:"", mod:false, tr:false, vieux:false, tri:{}};
+const SERVEUR = {actif:false, classeur:null, statuts:[], suit:false, charge:null,
+                 valeurs:["En cours","Décrochée","Non décrochée"]};
+const relance = () => window.TELEPHONE ? "cliquez sur Actualiser dans le cockpit du PC"
+  : SERVEUR.actif ? "cliquez sur Actualiser" : "relancez Lancer_Corrige.bat";
+const PALETTE=["#0071E3","#5AC8FA","#34C759","#FFCC00","#FF9500","#FF375F","#AF52DE","#8E8E93","#5E5CE6","#64D2FF"];
+function lireClasseur(buf){
+  const deja = buf && buf.feuilles;
+  const wb = deja ? null : XLSX.read(buf,{type:"array",cellDates:true});
+  const f = n => {
+    if(deja){ const k = Object.keys(deja).find(s=>norm(s)===norm(n)); return k ? deja[k].map(r=>({...r})) : []; }
+    const k = wb.SheetNames.find(s=>norm(s)===norm(n));
+    if(!k) return [];
+    const ws = wb.Sheets[k];
+    const format = XLSX.utils.sheet_to_json(ws,{defval:null,raw:false});
+    const brut = XLSX.utils.sheet_to_json(ws,{defval:null,raw:true});
+    return format.map((r,i)=>{
+      const b = brut[i] || {}, out = {...r};
+      for(const c in b){
+        const v = b[c];
+        if(v instanceof Date && !isNaN(v)) out[c] = v;
+        else if(typeof v === "number" && isFinite(v)) out[c] = v;
+      }
+      return out;
+    });
+  };
+  const brut = f("AFFAIRES");
+  if(!brut.length) throw new Error("onglet AFFAIRES introuvable ou vide.");
+  const affaires = brut.filter(r=>r["Reference"]).map(r=>{
+    const surface=nb(r["Surface (m2)"])??0, surfFact=nb(r["Surface facturee (m2)"])??0;
+    const ca=nb(r["CA HT (MAD)"])??0, facture=nb(r["CA facture HT (MAD)"])??0;
+    const st=norm(r["Statut commercial"]);
+    return { reference:r["Reference"], client:(r["Client"]||"").trim()||"—",
+      affaire:(r["Affaire"]||"").trim(), commercial:(r["Commercial"]||"").trim()||"Non attribué",
+      statut:(r["Statut commercial"]||"").trim(), etatProjet:(r["Etat projet"]||"").trim(),
+      decrochee: st.includes("DECROCH")&&!st.includes("NON"), perdue: st.includes("NON DECROCH"),
+      clientBrut:String(r["Client"]??"").trim(), statutMoteur:String(r["Statut commercial"]??"").trim(),
+      statutMaitre:String(("Statut fichier maitre" in r ? r["Statut fichier maitre"] : r["Statut commercial"])??"").trim(),
+      origineStatut:String(r["Origine statut"]??"").trim(),
+      surface, pu:nb(r["PU vendu (MAD/m2)"]), ca,
+      margeVendue: nb(r["Marge annoncee (%)"])!=null ? nb(r["Marge annoncee (%)"])/100 : null,
+      delai:nb(r["Delai transformation (jours)"]),
+      dateOffre:dt(r["Date offre"]), dateContrat:dt(r["Date contrat"]),
+      origineDate:(r["Origine date"]||"").trim(),
+      surfaceFacturee:surfFact, facture, reste:ca-facture,
+      avancement: surface>0 ? surfFact/surface : null };
+  });
+  const parRef = Object.fromEntries(affaires.map(a=>[a.reference,a]));
+  const depenses = f("DEPENSES").filter(r=>r["Reference"]).map(r=>({
+    reference:r["Reference"], famille:(r["Famille"]||"").trim(),
+    budget:nb(r["Budget (MAD)"])??0, reel:nb(r["Reel (MAD)"])??0,
+    origine:(r["Origine du reel"]||"-").trim() }));
+  const factures = f("FACTURES").filter(r=>r["Reference"]).map(r=>({
+    reference:r["Reference"], feuille:r["Facture (onglet source)"]||"", date:dt(r["Date facture"]),
+    surface:nb(r["Surface facturee (m2)"])??0, ht:nb(r["Montant HT (MAD)"])??0,
+    code:r["Code affaire facture"]||"", coherence:(r["Coherence"]||"").trim() }));
+  const mensuel = f("MENSUEL").filter(r=>r["Mois"]).map(r=>({
+    mois:String(r["Mois"]).slice(0,7), reference:r["Reference"],
+    mo:nb(r["Main d'oeuvre (MAD)"])??0, materiel:nb(r["Amortissement materiel (MAD)"])??0 }));
+  const controles = f("CONTROLE").filter(r=>r["Gravite"]).map(r=>({
+    gravite:r["Gravite"], reference:r["Reference"]||"", constat:r["Constat"]||"" }));
+  const livraisons = f("LIVRAISONS").filter(r=>r["Reference"]&&r["Date livraison"]).map(r=>({
+    reference:r["Reference"], affaire:r["Affaire"]||"", date:dt(r["Date livraison"]),
+    designation:r["Designation"]||"", quantite:nb(r["Quantite"]), unite:r["Unite"]||"",
+    fournisseur:r["Fournisseur"]||"", bl:r["N° bon de livraison"]||"" }));
+  for(const a of affaires){ a.budget=0; a.reel=0; a.reelMesure=0; }
+  for(const d of depenses){
+    const a=parRef[d.reference]; if(!a||d.famille.startsWith("7.1")) continue;
+    a.budget+=d.budget; a.reel+=d.reel;
+    if(d.origine.startsWith("reel")) a.reelMesure+=d.reel;     // même règle que l'onglet Fiabilité
+  }
+  for(const a of affaires){
+    a.partReelle = a.reel>0 ? a.reelMesure/a.reel : null;
+    a.margeReelle = (a.ca>0&&a.reel>0&&a.budget>0) ? (a.ca-a.reel)/a.ca : null;
+    a.ecart = (a.margeReelle!=null&&a.margeVendue!=null) ? (a.margeReelle-a.margeVendue)*100 : null;
+    a.conso = a.budget>0 ? a.reel/a.budget : null;
+    a.indice = (a.conso>0&&a.avancement!=null) ? a.avancement/a.conso : null;
+    a.pctFacture = a.ca>0 ? a.facture/a.ca : null;
+    a.decalage = (a.pctFacture!=null&&a.avancement!=null) ? (a.pctFacture-a.avancement)*100 : null;
+    a.position = a.facture-a.reel;
+  }
+  const stock = f("STOCK").filter(r=>r["Code"]).map(r=>({
+    code:r["Code"], article:(r["Article"]||"").trim(), unite:r["Unite"]||"",
+    inventaire:nb(r["Stock inventaire"]), entrees:nb(r["Entrees"])??0, sorties:nb(r["Sorties"])??0,
+    retours:nb(r["Retours"])??0, stock:nb(r["Stock"])??0, seuil:nb(r["Seuil minimum"]),
+    etat:(r["Etat"]||"").trim(), prix:nb(r["Prix achat (MAD)"]), valeur:nb(r["Valeur (MAD)"]),
+    dateInventaire:dt(r["Date inventaire"]) }));
+  const prixDe = Object.fromEntries(stock.map(a=>[a.code,a.prix]));
+  const mouvements = f("STOCK_MOUVEMENTS").filter(r=>r["Type"]).map(r=>({
+    date:dt(r["Date"]), type:r["Type"], bon:String(r["N° bon"]??""), code:r["Code"]||"",
+    article:(r["Article"]||"").trim(), quantite:nb(r["Quantite"]), unite:r["Unite"]||"",
+    reference:r["Reference"]||"", affaire:(r["Affaire"]||"").trim(), vers:r["Vers reference"]||"",
+    controle:(r["Controle"]||"").trim(), observation:r["Observation"]||"",
+    valeur:(nb(r["Quantite"])??0)*(prixDe[r["Code"]]??0) }));
+  return { affaires, parRef, depenses, factures, mensuel, controles, livraisons, stock, mouvements };
+}
+function noter(){
+  const dec = D.affaires.filter(a=>a.decrochee);
+  const refsDec = new Set(dec.map(a=>a.reference));
+  const dep = D.depenses.filter(d=>refsDec.has(d.reference) && !d.famille.startsWith("7.1"));
+  const totalCout = dep.reduce((s,d)=>s+d.reel,0);
+  const mesure = dep.filter(d=>d.origine.startsWith("reel")).reduce((s,d)=>s+d.reel,0);
+  const partMesuree = totalCout>0 ? mesure/totalCout : 0;
+  const avecFacture = dec.length ? dec.filter(a=>a.facture>0).length/dec.length : 0;
+  const refsExe = new Set(dep.filter(d=>/EXE/i.test(d.origine)).map(d=>d.reference));
+  const avecExe = dec.length ? refsExe.size/dec.length : 0;
+  const exhaustivite = 100*(0.60*partMesuree + 0.25*avecFacture + 0.15*avecExe);
+  const nBloq = D.controles.filter(c=>norm(c.gravite)==="BLOQUANT").length;
+  const nAvert = D.controles.filter(c=>norm(c.gravite)==="AVERTISSEMENT").length;
+  const exactitude = 100 * Math.exp(-(nBloq*0.12 + nAvert*0.02));
+  const nf = D.factures.length;
+  const pctDate = nf ? D.factures.filter(f=>f.date).length/nf : 0;
+  const pctCode = nf ? D.factures.filter(f=>f.coherence!=="a verifier").length/nf : 0;
+  const pctContrat = dec.length ? dec.filter(a=>/contrat/i.test(a.origineDate)).length/dec.length : 0;
+  const tracabilite = 100*(0.35*pctDate + 0.35*pctCode + 0.30*pctContrat);
+  const moisPointes = [...new Set(D.mensuel.filter(m=>m.mo>0).map(m=>m.mois))].sort();
+  const dernier = moisPointes.length ? moisPointes[moisPointes.length-1] : null;
+  let fraicheur = 0;
+  if(dernier){
+    const [a,m] = dernier.split("-").map(Number);
+    const ecart = (new Date().getFullYear()-a)*12 + (new Date().getMonth()+1-m);
+    fraicheur = ecart<=1 ? 100 : ecart<=2 ? 70 : ecart<=4 ? 40 : 10;
+  }
+  const nego = D.affaires.filter(a=>!a.decrochee && !a.perdue);
+  const sNego = nego.reduce((s,a)=>s+a.surface,0);
+  const auj = new Date();
+  const sVieux = nego.filter(a=>a.dateOffre && (auj-a.dateOffre)/86400000 > 183)
+    .reduce((s,a)=>s+a.surface,0);
+  const fraicheurPipe = sNego>0 ? 1-sVieux/sNego : 1;
+  const actualite = 100*(0.6*fraicheur/100 + 0.4*fraicheurPipe);
+  const global = 0.40*exhaustivite + 0.30*exactitude + 0.20*tracabilite + 0.10*actualite;
+  const note = global>=90?"A":global>=75?"B":global>=60?"C":global>=40?"D":"E";
+  return { global, note, partMesuree, totalCout, mesure, nBloq, nAvert, moisPointes, dernier,
+    sVieux, sNego, nbVieux: nego.filter(a=>a.dateOffre && (auj-a.dateOffre)/86400000>183).length,
+    dimensions:[
+      {nom:"Exhaustivité", val:exhaustivite, poids:40,
+       detail:`${pct(partMesuree)} du coût mesuré sur pièce`},
+      {nom:"Exactitude", val:exactitude, poids:30,
+       detail:`${nBloq} anomalie${nBloq>1?"s":""} bloquante${nBloq>1?"s":""}, ${nAvert} à vérifier`},
+      {nom:"Traçabilité", val:tracabilite, poids:20,
+       detail:`${pct(pctDate)} des factures datées, ${pct(pctCode)} au bon code`},
+      {nom:"Actualité", val:actualite, poids:10,
+       detail: dernier ? `pointage jusqu'à ${dernier}` : "aucun pointage"},
+    ]};
+}
+function anneau(v, couleur, taille=58){
+  const r=(taille-8)/2, c=2*Math.PI*r, off=c*(1-Math.max(0,Math.min(100,v))/100);
+  return `<svg width="${taille}" height="${taille}" viewBox="0 0 ${taille} ${taille}" aria-hidden="true">
+    <circle cx="${taille/2}" cy="${taille/2}" r="${r}" fill="none" stroke="var(--surface-2)" stroke-width="7"></circle>
+    <circle cx="${taille/2}" cy="${taille/2}" r="${r}" fill="none" stroke="${couleur}" stroke-width="7"
+      stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"
+      transform="rotate(-90 ${taille/2} ${taille/2})"></circle>
+    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central"
+      font-size="14" font-weight="600" fill="var(--ink)">${Math.round(v)}</text></svg>`;
+}
+const couleurDe = v => v>=75 ? "var(--pos)" : v>=50 ? "var(--warn)" : "var(--crit)";
+function rendreFiabilite(){
+  const n = noter();
+  $("#score").textContent = Math.round(n.global);
+  const bn = $("#note"); bn.textContent = n.note;
+  const cl = n.global>=75 ? ["var(--pos-soft)","var(--pos)"] : n.global>=50
+    ? ["var(--warn-soft)","var(--warn)"] : ["var(--crit-soft)","var(--crit)"];
+  bn.style.background = cl[0]; bn.style.color = cl[1];
+  $("#pastille").style.background = cl[1];
+  $("#pastille").title = `Fiabilité des données : ${Math.round(n.global)}/100 (onglet Fiabilité)`;
+  $("#verdict-titre").textContent = n.global>=75
+    ? "Les chiffres de ce fichier peuvent être utilisés pour décider."
+    : n.global>=50
+    ? "Les chiffres sont exploitables avec précaution."
+    : "Les marges présentées ne peuvent pas encore servir de base de décision.";
+  $("#verdict-texte").textContent =
+    `${pct(n.partMesuree)} du coût des affaires décrochées repose sur des pièces réelles ; `
+    + `le reste (${fmt(n.totalCout-n.mesure)} MAD) est le budget de chiffrage repris faute de justificatif. `
+    + `${n.nBloq} anomalie${n.nBloq>1?"s":""} bloquante${n.nBloq>1?"s":""} et ${n.nAvert} point${n.nAvert>1?"s":""} de vigilance sont relevés.`;
+  $("#anneaux").innerHTML = n.dimensions.map(d=>
+    `<div class="anneau">${anneau(d.val, couleurDe(d.val))}
+      <div><div class="t">${d.nom} <span style="color:var(--muted);font-weight:400">· ${d.poids} %</span></div>
+      <div class="v">${d.detail}</div></div></div>`).join("");
+  const dec = D.affaires.filter(a=>a.decrochee);
+  $("#k-fia").innerHTML = [
+    ["Coût vérifié sur pièce", fmt(n.mesure)+" MAD", pct(n.partMesuree)+" du coût total"],
+    ["Coût estimé", fmt(n.totalCout-n.mesure)+" MAD", "budget repris faute de pièce"],
+    ["Mois de pointage", String(n.moisPointes.length), n.dernier ? "dernier : "+n.dernier : "aucun"],
+    ["Offres dormantes", String(n.nbVieux), fmt(n.sVieux)+" m² sans décision depuis 6 mois"],
+  ].map(([k,v,d])=>`<div class="kpi"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join("");
+  const refsDec = new Set(dec.map(a=>a.reference));
+  const fam={};
+  for(const d of D.depenses){
+    if(!refsDec.has(d.reference)||d.famille.startsWith("7.1")) continue;
+    const f = fam[d.famille] ??= {total:0, mesure:0};
+    f.total += d.reel; if(d.origine.startsWith("reel")) f.mesure += d.reel;
+  }
+  const lf = Object.entries(fam).filter(([,f])=>f.total>0).sort((a,b)=>b[1].total-a[1].total);
+  const maxF = Math.max(...lf.map(([,f])=>f.total),1);
+  $("#origine").innerHTML = lf.map(([nom,f])=>{
+    const p = f.mesure/f.total;
+    return `<div class="ligne"><span>${nom.replace(/^\d+\s/,"")}</span>
+      <span class="piste" title="${fmt(f.mesure)} MAD mesurés sur ${fmt(f.total)} MAD">
+        <i style="width:${(f.total/maxF*100).toFixed(1)}%;background:var(--hairline)"></i>
+        <i style="width:${(f.mesure/maxF*100).toFixed(1)}%;background:${p>=.9?"var(--pos)":p>0?"var(--warn)":"var(--crit)"}"></i></span>
+      <span class="val"><b>${pct(p)}</b> <span style="font-size:12.5px">${fmt(f.total)}</span></span></div>`;
+  }).join("");
+  const enjeu = lf.filter(([,f])=>f.mesure/f.total < 0.9)
+    .map(([nom,f])=>({nom:nom.replace(/^\d+\s/,""), montant:f.total-f.mesure}));
+  const maxE = Math.max(...enjeu.map(e=>e.montant),1);
+  $("#manques").innerHTML = enjeu.length ? enjeu.map((e,i)=>
+    `<div class="ligne"><span>${e.nom}</span>
+      <span class="piste"><i style="width:${(e.montant/maxE*100).toFixed(1)}%;background:${PALETTE[i%PALETTE.length]}"></i></span>
+      <span class="val"><b>${fmt(e.montant)}</b> MAD</span></div>`).join("")
+    + `<p style="margin:16px 0 0;font-size:13.5px;color:var(--muted)">
+        Montant que chaque famille permettrait de vérifier si vous fournissiez les factures fournisseurs
+        et les quantités réellement exécutées.</p>`
+    : `<div class="pas-de">Toutes les familles sont vérifiées sur pièce.</div>`;
+  const rang={BLOQUANT:0,AVERTISSEMENT:1,INFORMATION:2};
+  $("#n-constats").textContent = `${D.controles.length} constats — ${n.nBloq} bloquants, ${n.nAvert} à vérifier`;
+  $("#constats").innerHTML = [...D.controles]
+    .sort((a,b)=>(rang[norm(a.gravite)]??9)-(rang[norm(b.gravite)]??9))
+    .map(c=>{
+      const g=norm(c.gravite);
+      const b = g==="BLOQUANT"?"b-crit":g==="AVERTISSEMENT"?"b-warn":"b-neutre";
+      return `<div class="constat"><span class="badge ${b}">${c.gravite}</span>
+        <span class="r">${c.reference}</span><span>${c.constat}</span></div>`;
+    }).join("");
+}
+function trier(l,id,def){
+  const t = etat.tri[id] ?? def;
+  return [...l].sort((a,b)=>{
+    const x=a[t.k], y=b[t.k];
+    if(typeof x==="string") return x.localeCompare(y)*t.s;
+    return ((x??-1e15)-(y??-1e15))*t.s;
+  });
+}
+function brancherTri(id, rerender){
+  const t = document.getElementById(id);
+  if(!t) return;
+  t.querySelectorAll("th[data-k]").forEach(th=>th.addEventListener("click",()=>{
+    const k=th.dataset.k, cur=etat.tri[id];
+    etat.tri[id] = (cur&&cur.k===k) ? {k,s:-cur.s} : {k,s:-1};
+    rerender();
+  }));
+}
+const L_ = (v, aff, desc) => ({t:"liste", v, aff, desc});      // valeurs à cocher
+const N_ = (d=0, pc=false) => ({t:"nombre", d, pc});            // nombres : d décimales affichées, pc = pourcentage
+const libMois = m => { if(!m) return "(sans date)"; const [a,mo] = m.split("-").map(Number);
+  const s = new Date(a,mo-1,1).toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
+  return s[0].toUpperCase()+s.slice(1); };
+const MOIS_ = (k="date") => L_(r=>moisDe(r[k])||"", libMois, true);  // dates regroupées par mois, le plus récent d'abord
+const COLS = {
+  "t-com": {nom:L_(), gagnees:N_(), perdues:N_(), enNego:N_(), surfaceGagnee:N_(), surfaceNego:N_(),
+    transformation:N_(0,true), conversion:N_(0,true), puMoyen:N_(), margeMoy:N_(1,true), delaiMoy:N_()},
+  "t-aff": {affaire:L_(), client:L_(), commercial:L_(), statut:L_(a=>canon(a.statut)||a.statut),
+    surface:N_(), pu:N_(), ca:N_(), margeVendue:N_(1,true), margeReelle:N_(1,true)},
+  "t-his": {decide_le:L_(c=>String(c.decide_le||"").slice(0,7), libMois, true), affaire:L_(),
+    statut_maitre:L_(), statut:L_(), suite:L_()},
+  "t-ch": {affaire:L_(), phase:L_(), dateContrat:MOIS_("dateContrat"), surface:N_(), surfaceFacturee:N_(),
+    avancement:N_(0,true), reste:N_(), nBons:N_(), derniereLiv:MOIS_("derniereLiv")},
+  "t-perf": {affaire:L_(), avancement:N_(0,true), budget:N_(), reel:N_(), partReelle:N_(0,true)},
+  "t-liv": {affaire:L_(x=>x.affaire||x.reference), date:MOIS_(), designation:L_(), quantite:N_(2), bl:L_()},
+  "t-fac": {affaire:L_(), ca:N_(), facture:N_(), reste:N_(), pctFacture:N_(0,true), avancement:N_(0,true),
+    decalage:N_()},
+  "t-detail": {affaire:L_(), feuille:L_(), date:MOIS_(), surface:N_(), ht:N_(),
+    coherence:L_(f=>f.coherence==="a verifier" ? "Code à vérifier" : "Code cohérent")},
+  "t-stk": {article:L_(), inventaire:N_(), entrees:N_(), sorties:N_(), retours:N_(), stock:N_(), seuil:N_(),
+    etat:L_(a=>a.etatAffiche??a.etat), prix:N_(2), valeur:N_()},
+  "t-mvt": {date:MOIS_(), type:L_(), bon:L_(), article:L_(), quantite:N_(2),
+    affaire:L_(m=>m.affaire||m.reference), controle:L_()},
+};
+const FILTRE = {}, BASE = {}, PAN = {el:null, btn:null, id:null, k:null, vals:[]};
+function valF(c, k, r){
+  const v = c.v ? c.v(r) : r[k];
+  if(c.t==="liste") return String(v ?? "").trim();
+  if(v==null || v==="" || !isFinite(v)) return null;
+  const p = 10**c.d; return Math.round((c.pc ? v*100 : +v)*p)/p;
+}
+function passe(c, k, f, r){
+  const v = valF(c, k, r);
+  if(c.t==="liste") return f.sel.has(v);
+  return v!=null && (f.min==null || v>=f.min) && (f.max==null || v<=f.max);
+}
+const filtresDe = id => Object.entries(FILTRE[id] || {}).filter(([k])=>COLS[id]?.[k]);
+const filtreActif = id => filtresDe(id).length>0;
+function filtrer(id, lignes, sauf){
+  const fs = filtresDe(id).filter(([k])=>k!==sauf);
+  const res = fs.length ? lignes.filter(r=>fs.every(([k,f])=>passe(COLS[id][k], k, f, r))) : lignes;
+  if(sauf===undefined){ BASE[id] = lignes; marquerFiltres(id, lignes.length, res.length); }
+  return res;
+}
+const rien = (id, n, texte) => `<tr><td colspan="${n}" class="pas-de">${
+  filtreActif(id) && (BASE[id]||[]).length ? "Aucune ligne ne correspond aux filtres." : texte}</td></tr>`;
+function marquerFiltres(id, total, n){
+  const t = document.getElementById(id); if(!t) return;
+  const actifs = filtresDe(id).map(([k])=>k);
+  t.querySelectorAll(".fbtn").forEach(b=>b.classList.toggle("actif", actifs.includes(b.dataset.col)));
+  const bar = document.querySelector(`.fbar[data-pour="${id}"]`); if(!bar) return;
+  bar.hidden = !actifs.length;
+  if(actifs.length){
+    const noms = actifs.map(k=>t.querySelector(`th[data-k="${k}"]`)?.dataset.titre || k);
+    bar.innerHTML = `<span><b>${n}</b> ligne${n>1?"s":""} sur ${total} · filtre${noms.length>1?"s":""} sur
+      ${noms.map(esc).join(", ")}</span><button class="btn" type="button" data-effacer="${id}">Effacer les filtres</button>`;
+  }
+}
+const ENTONNOIR = `<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1.5 2.5h13l-5 6v4.3l-3 1.6V8.5z"/></svg>`;
+function brancherFiltres(){
+  for(const id in COLS){
+    const t = document.getElementById(id); if(!t) continue;
+    t.querySelectorAll("thead th[data-k]").forEach(th=>{
+      const k = th.dataset.k; if(!COLS[id][k]) return;
+      th.dataset.titre = th.textContent.trim();
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "fbtn"; b.dataset.tab = id; b.dataset.col = k; b.innerHTML = ENTONNOIR;
+      b.title = "Filtrer"; b.setAttribute("aria-label", `Filtrer la colonne ${th.dataset.titre}`);
+      b.setAttribute("aria-haspopup", "dialog"); b.setAttribute("aria-expanded", "false");
+      b.addEventListener("click", e=>{ e.stopPropagation(); PAN.btn===b ? fermerFiltre() : ouvrirFiltre(b); });
+      th.append(b);
+    });
+    const bar = document.createElement("div");
+    bar.className = "fbar"; bar.dataset.pour = id; bar.hidden = true; bar.setAttribute("role", "status");
+    const tete = t.closest("details") ? null : t.closest("section.carte")?.querySelector(":scope > .carte-tete");
+    if(!tete){ t.closest(".defile").before(bar); continue; }
+    if(!tete.classList.contains("outils")){
+      const bloc = document.createElement("div"); bloc.append(...tete.childNodes);
+      tete.append(bloc); tete.classList.add("outils");
+    }
+    tete.append(bar);
+  }
+}
+function fermerFiltre(retour=true){
+  const b = PAN.btn; if(!b) return;
+  PAN.el.hidden = true; b.setAttribute("aria-expanded", "false");
+  PAN.btn = PAN.id = PAN.k = null;
+  document.documentElement.style.minHeight = "";
+  if(retour) b.focus({preventScroll:true});
+}
+function placerFiltre(){
+  const r = PAN.btn.getBoundingClientRect(), p = PAN.el;
+  const large = document.documentElement.clientWidth;
+  p.style.left = (Math.max(12, Math.min(r.left-8, large-p.offsetWidth-12)) + scrollX) + "px";
+  p.style.top = (r.bottom + scrollY + 8) + "px";
+}
+function ouvrirFiltre(b){
+  fermerFiltre(false);
+  const id = b.dataset.tab, k = b.dataset.col, c = COLS[id][k];
+  if(!D || !BASE[id]) return;
+  const p = PAN.el = $("#fpan"), titre = b.closest("th").dataset.titre;
+  PAN.btn = b; PAN.id = id; PAN.k = k; b.setAttribute("aria-expanded", "true");
+  document.documentElement.style.minHeight = document.documentElement.scrollHeight + "px";
+  p.setAttribute("aria-label", `Filtre de la colonne ${titre}`);
+  const lignes = filtrer(id, BASE[id], k), f = FILTRE[id]?.[k];
+  const pied = `<div class="pied"><button class="btn" type="button" id="fp-effacer">Effacer ce filtre</button>
+    <button class="btn" type="button" id="fp-fermer">Fermer</button></div>`;
+  if(c.t==="liste"){
+    const compte = new Map();
+    for(const r of lignes){ const v = valF(c,k,r); compte.set(v, (compte.get(v)||0)+1); }
+    if(f) for(const v of f.sel) if(!compte.has(v)) compte.set(v, 0);   // cochée, mais absente sous les autres filtres
+    const lib = v => (c.aff ? c.aff(v) : v) || "(vide)";
+    PAN.vals = [...compte.keys()].sort((x,y)=> c.desc ? y.localeCompare(x)
+      : lib(x).localeCompare(lib(y), "fr", {numeric:true, sensitivity:"base"}));
+    p.innerHTML = `<h3>${esc(titre)}</h3>`
+      + (PAN.vals.length>8 ? `<input type="search" id="fp-rech" placeholder="Rechercher une valeur…"
+          aria-label="Rechercher une valeur de la colonne ${esc(titre)}">` : "")
+      + `<div class="liste"><label class="tout"><input type="checkbox" id="fp-tout"><span class="t" id="fp-tout-t">(Tout sélectionner)</span></label>`
+      + PAN.vals.map((v,i)=>`<label><input type="checkbox" data-i="${i}"${!f||f.sel.has(v)?" checked":""}>
+          <span class="t" title="${esc(lib(v))}">${esc(lib(v))}</span><span class="n">${compte.get(v)}</span></label>`).join("")
+      + `</div>` + pied;
+  } else {
+    const vs = lignes.map(r=>valF(c,k,r)).filter(v=>v!=null), u = c.pc ? " %" : "";
+    const lo = vs.length ? Math.min(...vs) : null, hi = vs.length ? Math.max(...vs) : null;
+    const fr = v => v==null ? "" : String(v).replace(".", ",");
+    const f2 = n => n.toLocaleString("fr-FR", {minimumFractionDigits: n%1 ? c.d : 0, maximumFractionDigits: c.d});
+    p.innerHTML = `<h3>${esc(titre)}${c.pc ? " (en %)" : ""}</h3><div class="champs">
+      <label>Minimum<input type="text" inputmode="decimal" id="fp-min" value="${fr(f?.min)}" autocomplete="off"></label>
+      <label>Maximum<input type="text" inputmode="decimal" id="fp-max" value="${fr(f?.max)}" autocomplete="off"></label></div>
+      <p class="aide">${vs.length ? `Valeurs de ${f2(lo)}${u} à ${f2(hi)}${u}` : "Aucune valeur dans cette colonne"}${
+        vs.length<lignes.length ? ` · ${lignes.length-vs.length} ligne${lignes.length-vs.length>1?"s":""} sans valeur` : ""}</p>` + pied;
+  }
+  p.hidden = false; placerFiltre(); majPanneau();
+  (p.querySelector("#fp-rech, #fp-min") || p.querySelector("#fp-tout")).focus({preventScroll:true});
+}
+function majPanneau(){
+  const p = PAN.el; if(!PAN.btn) return;
+  p.querySelector("#fp-effacer").disabled = !FILTRE[PAN.id]?.[PAN.k];
+  const tout = p.querySelector("#fp-tout"); if(!tout) return;
+  const vis = [...p.querySelectorAll(".liste input[data-i]")].filter(x=>!x.closest("label").hidden);
+  const n = vis.filter(x=>x.checked).length;
+  tout.checked = vis.length>0 && n===vis.length; tout.indeterminate = n>0 && n<vis.length;
+  p.querySelector("#fp-tout-t").textContent = p.querySelector("#fp-rech")?.value.trim()
+    ? `(Sélectionner les ${vis.length} résultat${vis.length>1?"s":""})` : "(Tout sélectionner)";
+}
+function appliquerFiltre(f){                       // f : nouveau filtre de la colonne ouverte, ou null
+  const F = FILTRE[PAN.id] ??= {};
+  if(f) F[PAN.k] = f; else delete F[PAN.k];
+  majPanneau(); RENDU[PAN.id]();
+  placerFiltre();                                  // le panneau suit son en-tête si la mise en page a bougé
+}
+function appliquerListe(){
+  const cases = [...PAN.el.querySelectorAll(".liste input[data-i]")];
+  const sel = new Set(cases.filter(x=>x.checked).map(x=>PAN.vals[+x.dataset.i]));
+  appliquerFiltre(sel.size===cases.length ? null : {sel});
+}
+function brancherPanneau(){
+  const p = $("#fpan");
+  p.addEventListener("change", e=>{
+    if(!PAN.btn || COLS[PAN.id][PAN.k].t!=="liste") return;
+    if(e.target.id==="fp-tout")                  // agit sur les valeurs affichées (toutes, ou les résultats de la recherche)
+      p.querySelectorAll(".liste input[data-i]").forEach(x=>{ if(!x.closest("label").hidden) x.checked = e.target.checked; });
+    if(e.target.matches("#fp-tout, .liste input[data-i]")) appliquerListe();
+  });
+  p.addEventListener("input", e=>{
+    if(!PAN.btn) return;
+    if(e.target.id==="fp-rech"){
+      const q = norm(e.target.value);
+      p.querySelectorAll(".liste input[data-i]").forEach(x=>{
+        x.closest("label").hidden = !!q && !norm(x.closest("label").querySelector(".t").textContent).includes(q); });
+      return majPanneau();
+    }
+    if(e.target.id==="fp-min" || e.target.id==="fp-max"){
+      const lire = q => { const el = p.querySelector(q), t = el.value.trim(), v = t==="" ? null : nb(t);
+        el.toggleAttribute("aria-invalid", t!=="" && v==null); return v; };
+      const min = lire("#fp-min"), max = lire("#fp-max");
+      appliquerFiltre(min==null && max==null ? null : {min, max});
+    }
+  });
+  p.addEventListener("keydown", e=>{              // Entrée dans la recherche : ne garder que les résultats
+    if(e.key!=="Enter" || e.target.id!=="fp-rech" || !e.target.value.trim()) return;
+    e.preventDefault();
+    p.querySelectorAll(".liste input[data-i]").forEach(x=>{ x.checked = !x.closest("label").hidden; });
+    appliquerListe();
+  });
+  p.addEventListener("click", e=>{
+    if(e.target.id==="fp-fermer") return fermerFiltre();
+    if(e.target.id==="fp-effacer"){ const b = PAN.btn; appliquerFiltre(null); ouvrirFiltre(b); }
+  });
+  document.addEventListener("pointerdown", e=>{
+    if(PAN.btn && !p.contains(e.target) && !e.target.closest(".fbtn")) fermerFiltre(false); });
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape" && PAN.btn){ e.preventDefault(); fermerFiltre(); } });
+  document.addEventListener("click", e=>{
+    const b = e.target.closest("[data-effacer]"); if(!b) return;
+    delete FILTRE[b.dataset.effacer]; fermerFiltre(false); RENDU[b.dataset.effacer]();
+  });
+  document.addEventListener("scroll", e=>{
+    if(PAN.btn && e.target!==document && !p.contains(e.target)) fermerFiltre(false); }, true);
+  addEventListener("resize", ()=>{ if(PAN.btn) placerFiltre(); });
+}
+function fixerStatut(a, statut){
+  a.statut = statut; const st = norm(statut);
+  a.decrochee = st.includes("DECROCH") && !st.includes("NON");
+  a.perdue = st.includes("NON DECROCH");
+}
+function appliquerStatuts(){
+  if(!D) return;
+  D.orphelins = [];
+  if(!SERVEUR.actif){
+    for(const a of D.affaires){
+      fixerStatut(a, a.statutMoteur); a.choix = null; a.aRecalculer = false;
+      a.statutModifie = norm(a.origineStatut).startsWith("COCKPIT");
+    }
+    return;
+  }
+  const parRef = {}; for(const s of SERVEUR.statuts) parRef[s.reference] ??= s;   // le plus récent d'abord
+  const retrouves = new Set();
+  for(const a of D.affaires){
+    const s = parRef[a.reference];
+    const c = (s && norm(s.client)===norm(a.clientBrut) && norm(s.affaire)===norm(a.affaire)) ? s : null;
+    if(c) retrouves.add(c.id);
+    fixerStatut(a, c ? c.statut : a.statutMaitre);
+    a.choix = c; a.statutModifie = !!c;
+    a.aRecalculer = canon(a.statut) !== canon(a.statutMoteur);
+  }
+  D.orphelins = SERVEUR.statuts.filter(s=>!retrouves.has(s.id));
+}
+const jourDe = iso => { const m = String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? `${m[3]}/${m[2]}/${m[1]}` : ""; };
+const sourceStatut = () => D.source ??= D.affaires.some(a=>/^(recensement|a trancher|fichier maitre \(a trancher\))/i
+  .test(a.origineStatut)) ? "recensement" : "fichier maître";
+const aTrancher = a => !a.statutModifie && /trancher/i.test(a.origineStatut);
+function selectStatut(a, vide="—"){
+  const c = canon(a.statut), cl = a.decrochee?"b-pos":a.perdue?"b-crit":"b-warn";
+  const options = (c ? "" : `<option value="" selected disabled>${esc(a.statut)||vide}</option>`)
+    + SERVEUR.valeurs.map(v=>`<option${v===c?" selected":""}>${esc(v)}</option>`).join("");
+  return `<span class="choix ${cl}"><select data-statut="${esc(a.reference)}"
+      aria-label="Statut commercial de ${esc(a.affaire||a.reference)}">${options}</select></span>`;
+}
+function celluleStatut(a){
+  const cl = a.decrochee?"b-pos":a.perdue?"b-crit":"b-warn";
+  const source = sourceStatut();
+  const maitre = `${source} : ${esc(a.statutMaitre)||"vide"}`;
+  const attente = aTrancher(a) ? (a.statutMaitre ? "à trancher — statut du fichier maître en attendant" : "à trancher") : "";
+  if(!SERVEUR.actif)
+    return `<span class="badge ${cl}">${esc(a.statut)||"—"}</span>`
+      + (a.statutModifie ? `<div class="sous">${esc(a.origineStatut)}</div><div class="sous">${maitre}</div>` : "")
+      + (attente ? `<div class="sous">${attente}</div>` : "");
+  const notes = [];
+  if(a.statutModifie) notes.push(maitre);
+  if(attente) notes.push(attente);
+  if(a.aRecalculer) notes.push("à recalculer");
+  return `<span class="statut-ligne">${selectStatut(a)}`
+    + (a.statutModifie ? `<button class="mini" type="button" data-retour="${esc(a.reference)}"
+        aria-label="Revenir au statut du ${source} pour ${esc(a.affaire||a.reference)}"
+        title="Revenir au statut du ${source} (${esc(a.statutMaitre)||"vide"})">↺</button>` : "")
+    + `</span>` + notes.map(n=>`<div class="sous">${n}</div>`).join("");
+}
+function rendreBandeau(){
+  const n = D.affaires.filter(a=>a.aRecalculer).length, b = $("#bandeau");
+  b.hidden = !n;
+  if(n) b.innerHTML = `<span class="p"></span><span><b>${n} statut${n>1?"s":""} changé${n>1?"s":""}</b>
+    depuis la génération du fichier${SERVEUR.classeur?.genere_le ? ` (${esc(SERVEUR.classeur.genere_le)})` : ""}.
+    L'onglet Commercial en tient déjà compte. La répartition des charges, les coûts et les contrôles
+    seront recalculés ${SERVEUR.actif ? "à la prochaine actualisation" : "au prochain lancement de <b>Lancer_Corrige.bat</b>"}.
+    ${SERVEUR.actif ? `<button class="btn" type="button" data-actualiser>Actualiser maintenant</button>` : ""}</span>`;
+}
+let _minuterie = null;
+function informer(message, erreur=false){
+  const t = $("#toast");
+  t.textContent = message; t.classList.toggle("err", erreur); t.hidden = false;
+  clearTimeout(_minuterie); _minuterie = setTimeout(()=>{ t.hidden = true; }, erreur ? 9000 : 3500);
+}
+async function api(chemin, corps){
+  let r;
+  try{
+    r = await fetch(chemin, corps===undefined ? {cache:"no-store"} :
+      {method:"POST", cache:"no-store", headers:{"Content-Type":"application/json"}, body:JSON.stringify(corps)});
+  }catch(_){
+    throw new Error("le programme du cockpit ne répond plus : rouvrez-le avec l'icône « Cockpit NEW PREFA » du Bureau.");
+  }
+  let j = null; try{ j = await r.json(); }catch(_){}
+  if(!r.ok || !j || j.ok===false) throw new Error(j?.erreur || `réponse ${r.status}`);
+  return j;
+}
+let _file = Promise.resolve();
+function enregistrerStatut(chemin, corps, reference, dire){
+  _file = _file.then(async ()=>{
+    try{
+      const r = await api(chemin, corps);
+      SERVEUR.statuts = r.statuts || [];
+      appliquerStatuts(); rendre();
+      informer(dire(r));
+      if($("#histo").open) chargerHistorique();
+    }catch(err){
+      rendre();                                   // la liste reprend le statut réellement enregistré
+      informer("Statut non enregistré : " + err.message, true);
+    }
+    if(reference) [...document.querySelectorAll("select[data-statut]")]
+      .find(s=>s.dataset.statut===reference)?.focus({preventScroll:true});
+  });
+}
+function changerStatut(reference, statut){
+  const a = D.parRef[reference];
+  enregistrerStatut("api/statut", {reference, statut}, reference, r =>
+    r.resultat==="annule" ? `${reference} · retour au statut du fichier maître (${statut})`
+    : `${reference}${a?.affaire ? " " + a.affaire : ""} · ${statut} — enregistré`);
+}
+function annulerStatut(corps, reference){
+  enregistrerStatut("api/statut/annuler", corps, reference,
+    () => reference ? `${reference} · retour au statut du fichier maître` : "Choix retiré");
+}
+let HISTO = [];
+async function chargerHistorique(){
+  try{
+    const {choix} = await api("api/historique");
+    HISTO = choix.map(c=>({...c, suite: c.actif ? "en vigueur" : (c.motif_cloture || "clos")}));
+    rendreHistorique();
+  }catch(err){
+    HISTO = []; filtrer("t-his", HISTO);
+    $("#t-his tbody").innerHTML = `<tr><td colspan="5" class="pas-de">Historique indisponible : ${esc(err.message)}</td></tr>`;
+  }
+}
+function rendreHistorique(){
+  const h = trier(filtrer("t-his", HISTO), "t-his", {k:"decide_le", s:-1});
+  $("#t-his tbody").innerHTML = h.length ? h.map(c=>{
+    const quand = `${jourDe(c.decide_le)} ${String(c.decide_le||"").slice(11,16)}`;
+    const suite = c.actif ? `<span class="badge b-pos">en vigueur</span>`
+      : `${esc(c.suite)}<div class="sous">le ${jourDe(c.cloture_le)}</div>`;
+    return `<tr><td class="l">${quand}</td>
+      <td class="l">${esc(c.affaire)}<div class="sous">${esc(c.reference)} · ${esc(c.client)}</div></td>
+      <td class="l">${esc(c.statut_maitre)||"vide"}</td><td class="l">${esc(c.statut)}</td>
+      <td class="l">${suite}</td></tr>`; }).join("")
+    : rien("t-his", 5, "Aucun statut n'a encore été changé dans le cockpit.");
+}
+const BULLES = {};
+function viderBulles(...prefixes){
+  montrerBulle(null);
+  for(const k in BULLES) if(prefixes.some(p=>k.startsWith(p))) delete BULLES[k];
+}
+function htmlAttention(groupes, vide){
+  return groupes.length ? groupes.map(g=>`<div class="att">
+      <div class="att-tete"><span class="badge ${g.cl}"><span aria-hidden="true">${g.ic}&nbsp;</span>${g.lib}</span>
+        <span class="t">${g.titre}</span></div>
+      ${g.note ? `<p class="note-att">${g.note}</p>` : ""}
+      ${g.items.map(it=>`<div class="att-ligne"><div><b>${esc(it.a.affaire||it.a.reference)}</b>
+        <span class="sous">${[it.a.reference, it.d].filter(Boolean).map(esc).join(" · ")}</span></div>
+        <div class="val">${it.v||""}</div></div>`).join("")}
+      ${g.plus ? `<div class="att-plus">${g.plus}</div>` : ""}
+    </div>`).join("") : `<div class="pas-de">${vide}</div>`;
+}
+function ouvrirPli(id){
+  const d = document.getElementById(id); if(!d) return;
+  d.open = true;
+  d.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+}
+function filtrees(){
+  return D.affaires.filter(a=>
+    (!etat.com||a.commercial===etat.com) && (!etat.cli||a.client===etat.cli) &&
+    (!etat.rech||norm(a.affaire+" "+a.client+" "+a.reference).includes(norm(etat.rech))));
+}
+const enNegociation = a => !a.decrochee && !a.perdue && canon(a.statut)==="En cours";
+const dormante = a => enNegociation(a) && !!a.dateOffre && Date.now()-a.dateOffre > 183*JOUR;
+function statsCom(l){
+  const par={};
+  for(const a of l){
+    const s = par[a.commercial] ??= {nom:a.commercial, tranchees:0, gagnees:0, perdues:0, enNego:0, aTrancher:0,
+      surfaceProposee:0, surfaceGagnee:0, surfacePerdue:0, surfaceNego:0, caPropose:0, caGagne:0, caNego:0,
+      pu:[], marge:[], delais:[]};
+    if(a.decrochee||a.perdue){ s.tranchees++; s.surfaceProposee+=a.surface; s.caPropose+=a.ca;
+      if(a.perdue){ s.perdues++; s.surfacePerdue+=a.surface; } }
+    else if(enNegociation(a)){ s.enNego++; s.surfaceNego+=a.surface; s.caNego+=a.ca; }
+    else s.aTrancher++;
+    if(a.decrochee){ s.gagnees++; s.surfaceGagnee+=a.surface; s.caGagne+=a.ca;
+      if(a.pu) s.pu.push(a.pu);
+      if(a.margeVendue!=null) s.marge.push(a.margeVendue);
+      if(a.delai!=null&&a.delai>=0) s.delais.push(a.delai); }
+  }
+  const moy = t => t.length ? t.reduce((x,y)=>x+y,0)/t.length : null;
+  return Object.values(par).map(s=>({...s,
+    transformation: s.surfaceProposee>0 ? s.surfaceGagnee/s.surfaceProposee : null,
+    conversion: (s.surfaceProposee+s.surfaceNego)>0 ? s.surfaceGagnee/(s.surfaceProposee+s.surfaceNego) : null,
+    tauxCa: s.caPropose>0 ? s.caGagne/s.caPropose : null,
+    fiable: s.tranchees>=3, puMoyen:moy(s.pu), margeMoy:moy(s.marge), delaiMoy:moy(s.delais)}));
+}
+function infoOffre(a){
+  return {titre:`${a.affaire||a.reference} · ${a.reference}`, lignes:[
+    [a.ca ? `${fmt(a.ca)} MAD` : "—", "montant HT"],
+    [a.surface ? `${fmt(a.surface)} m²` : "—", a.pu ? `à ${fmt(a.pu)} MAD/m²` : "surface"],
+    [pct(a.margeVendue,1), "marge annoncée"],
+    [a.dateOffre ? leJour(a.dateOffre) : "—", a.dateOffre ? `offre, il y a ${ecoule(a.dateOffre)}` : "offre non datée"],
+    [a.client, "entreprise"], [a.commercial, "commercial"]]};
+}
+function rendreCommercial(){
+  viderBulles("co:", "of:", "cl:");
+  const l = filtrees();
+  const dec=l.filter(a=>a.decrochee), perdues=l.filter(a=>a.perdue), nego=l.filter(enNegociation);
+  const sG=dec.reduce((s,a)=>s+a.surface,0), sP=perdues.reduce((s,a)=>s+a.surface,0);
+  const sN=nego.reduce((s,a)=>s+a.surface,0), caN=nego.reduce((s,a)=>s+a.ca,0), ca=dec.reduce((s,a)=>s+a.ca,0);
+  const avecMarge=dec.filter(a=>a.margeVendue!=null && a.ca>0), caM=avecMarge.reduce((s,a)=>s+a.ca,0);
+  const margeP = caM ? avecMarge.reduce((s,a)=>s+a.margeVendue*a.ca,0)/caM : null;
+  const dorm=l.filter(dormante).sort((x,y)=>(y.ca||0)-(x.ca||0)), atr=l.filter(aTrancher);
+  $("#k-com").innerHTML = [
+    ["Transformation", pct(sG+sP>0 ? sG/(sG+sP) : null), `${fmt(sG)} m² gagnés sur ${fmt(sG+sP)} m² tranchés`],
+    ["CA décroché", `${fmt(ca)}<small>MAD</small>`,
+      `${pluriel(dec.length, "affaire")} · ${fmt(sG>0 ? ca/sG : null)} MAD/m² en moyenne`],
+    ["Marge vendue", pct(margeP,1),
+      avecMarge.length ? `moyenne pondérée par le CA, ${pluriel(avecMarge.length, "affaire")}` : "aucune marge annoncée"],
+    ["En négociation", `${fmt(nego.length)}<small>offre${nego.length>1?"s":""}</small>`,
+      `${fmt(sN)} m² · ${fmt(caN)} MAD HT en jeu`],
+  ].map(([k,v,d])=>`<div><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join("");
+  const stats=statsCom(l), puG=sG>0?ca/sG:null;
+  const parPerf = stats.filter(s=>s.gagnees+s.enNego>0).sort((x,y)=>(y.surfaceGagnee-x.surfaceGagnee)
+    || ((y.surfaceProposee+y.surfaceNego)-(x.surfaceProposee+x.surfaceNego)));
+  const sansSucces = stats.filter(s=>s.gagnees+s.enNego===0 && s.perdues>0);
+  const ligneCom = s => {
+    BULLES["co:"+s.nom] = {titre:s.nom, lignes:[
+      [`${pluriel(s.gagnees, "affaire")} · ${fmt(s.surfaceGagnee)} m²`, `gagnée${s.gagnees>1?"s":""}, ${fmt(s.caGagne)} MAD HT`],
+      [`${pluriel(s.enNego, "affaire")} · ${fmt(s.surfaceNego)} m²`, "en négociation"],
+      [`${pluriel(s.perdues, "affaire")} · ${fmt(s.surfacePerdue)} m²`, `perdue${s.perdues>1?"s":""}`],
+      [pct(s.transformation), "transformation : m² gagnés ÷ tranchés"],
+      [pct(s.conversion), "conversion : m² gagnés ÷ tout le proposé"],
+      [s.puMoyen==null ? "—" : `${fmt(s.puMoyen)} MAD/m²`, "prix moyen des affaires gagnées"],
+      [pct(s.margeMoy,1), "marge vendue moyenne"],
+      ...(s.aTrancher ? [[pluriel(s.aTrancher, "affaire"), "à trancher"]] : [])]};
+    const parts = [[s.surfaceGagnee,"var(--pos)"], [s.surfaceNego,"var(--muted)"], [s.surfacePerdue,"var(--crit)"]]
+      .filter(([v])=>v>0).map(([v,c])=>`<i style="background:${c};flex-grow:${v}"></i>`).join("");
+    const resume = [s.gagnees && `${s.gagnees} gagnée${s.gagnees>1?"s":""}`, s.enNego && `${s.enNego} en négo`,
+      s.perdues && `${s.perdues} perdue${s.perdues>1?"s":""}`].filter(Boolean).join(" · ");
+    const et = !s.fiable && s.transformation!=null
+      ? ` <span style="color:var(--warn)" title="moins de 3 affaires tranchées">∗</span>` : "";
+    return `<div class="ch" tabindex="0" data-bulle="co:${esc(s.nom)}">
+      <div class="nom"><b>${esc(s.nom)}</b><span>${resume || "aucune affaire tranchée"}</span></div>
+      <div class="segments" role="img" aria-label="${esc(`${fmt(s.surfaceGagnee)} m² gagnés, ${fmt(s.surfaceNego)} m² en négociation, ${fmt(s.surfacePerdue)} m² perdus`)}">${parts}</div>
+      <div class="val"><b>${pct(s.transformation)}${et}</b><span>${fmt(s.surfaceGagnee)} m² gagnés</span></div></div>`;
+  };
+  const nPerdues = sansSucces.reduce((t,s)=>t+s.perdues,0);
+  $("#com-perf").innerHTML = parPerf.length ? parPerf.map(ligneCom).join("")
+    + (sansSucces.length ? `<p class="note-att" style="margin:10px 0 0">Aucune affaire gagnée ni en cours :
+        ${sansSucces.map(s=>esc(s.nom)).join(", ")} (${pluriel(nPerdues, "affaire")} perdue${nPerdues>1?"s":""}).</p>` : "")
+    + `<div class="pied-carte"><span>À droite : transformation et m² gagnés · <span style="color:var(--warn)">∗</span> moins de 3 affaires tranchées</span>
+        <button class="btn" type="button" data-ouvrir="pli-com">Détail par commercial</button></div>`
+    : `<div class="pas-de">Aucune affaire pour ce choix.</div>`;
+  const groupes = [];
+  if(D.orphelins?.length) groupes.push({cl:"b-crit", ic:"✕", lib:"Non appliqué", titre:"Statut choisi pour une affaire introuvable",
+    note:"La ligne a été renommée ou déplacée : choisissez le statut à nouveau sur la bonne affaire, puis retirez l'ancien choix.",
+    items:D.orphelins.map(s=>({a:{affaire:`${s.client} – ${s.affaire}`, reference:s.reference},
+      d:`« ${s.statut} » choisi le ${jourDe(s.decide_le)}`,
+      v:`<button class="btn" type="button" data-retirer="${Number(s.id)}">Retirer</button>`}))});
+  if(atr.length) groupes.push({cl:"b-warn", ic:"!", lib:"À trancher", titre:"Statut commercial pas encore décidé",
+    note: SERVEUR.actif ? "Choisissez-le ici : il est enregistré aussitôt, puis reporté dans le recensement à la prochaine actualisation."
+      : `Tranchez-le dans le recensement des affaires (colonne Statut), puis ${relance()}.`,
+    items:atr.map(a=>({a, d:[a.client!=="—" ? a.client : "", a.surface ? `${fmt(a.surface)} m²` : ""].filter(Boolean).join(" · "),
+      v: SERVEUR.actif ? selectStatut(a, "Choisir…") : `<span class="badge b-neutre">${esc(a.statut)||"à trancher"}</span>`}))});
+  if(dorm.length) groupes.push({cl:"b-warn", ic:"!", lib:"À relancer", titre:"Sans réponse depuis plus de 6 mois",
+    note:`${pluriel(dorm.length, "offre")}, ${fmt(dorm.reduce((s,a)=>s+a.ca,0))} MAD HT : relancer, ou classer « Non décrochée ». Les plus importantes :`,
+    items:dorm.slice(0,3).map(a=>({a, d:`${a.client} · il y a ${ecoule(a.dateOffre)}`, v:a.ca ? `<b>${fmt(a.ca)}</b> MAD` : "—"})),
+    plus:`<button class="btn" type="button" data-voir="vieux">${dorm.length>3 ? `Voir les ${dorm.length} offres dans le tableau` : "Les voir dans le tableau"}</button>`});
+  const nAtt = new Set([...atr, ...dorm].map(a=>a.reference)).size + (D.orphelins?.length||0);
+  $("#com-att-sous").textContent = nAtt ? `${pluriel(nAtt, "affaire")} à regarder` : "Rien à signaler";
+  $("#com-attention").innerHTML = htmlAttention(groupes,
+    "Rien à signaler : statuts tranchés, aucune offre sans réponse depuis plus de 6 mois.");
+  const topN = [...nego].sort((x,y)=>(y.ca||0)-(x.ca||0)).slice(0,8), maxN = Math.max(...topN.map(a=>a.ca||0), 1);
+  $("#com-nego-sous").textContent = nego.length
+    ? `${pluriel(nego.length, "offre")} · ${fmt(sN)} m² · ${fmt(caN)} MAD HT · les plus importantes d'abord` : "Aucune offre en négociation";
+  $("#com-nego").innerHTML = topN.length ? topN.map(a=>{
+      BULLES["of:"+a.reference] = infoOffre(a);
+      return `<div class="ch large" tabindex="0" data-bulle="of:${esc(a.reference)}">
+        <div class="nom"><b>${esc(a.affaire||a.reference)}</b><span>${esc(a.client)} · ${esc(a.commercial)}</span></div>
+        <div class="jauge nue" role="img" aria-label="${esc(a.ca ? fmt(a.ca)+" MAD HT" : "montant inconnu")}">
+          <i style="width:${((a.ca||0)/maxN*100).toFixed(1)}%"></i></div>
+        <div class="val"><b>${a.ca ? fmt(a.ca) : "—"}</b><span>${a.dateOffre ? "offre il y a "+ecoule(a.dateOffre) : "offre non datée"}</span></div></div>`;
+    }).join("") + `<div class="pied-carte"><span>${[nego.length>topN.length ? `Les ${topN.length} plus importantes sur ${nego.length}` : "",
+        dorm.length ? `${fmt(dorm.length)} sans réponse depuis 6 mois` : ""].filter(Boolean).join(" · ")}</span>
+      <button class="btn" type="button" data-voir="nego">Voir les ${pluriel(nego.length, "offre")}</button></div>`
+    : `<div class="pas-de">Aucune offre en négociation pour ce choix.</div>`;
+  const parCli={};
+  for(const a of l){
+    const c = parCli[a.client] ??= {nom:a.client, ca:0, gagnees:0, perdues:0, nego:0, sG:0, sT:0};
+    if(a.decrochee){ c.ca+=a.ca; c.gagnees++; c.sG+=a.surface; }
+    if(a.perdue) c.perdues++;
+    if(a.decrochee||a.perdue) c.sT+=a.surface;
+    if(enNegociation(a)) c.nego++;
+  }
+  const clients = Object.values(parCli).filter(c=>c.ca>0).sort((x,y)=>y.ca-x.ca);
+  const totCa = clients.reduce((s,c)=>s+c.ca,0), topC = clients.slice(0,8), maxCl = topC[0]?.ca || 1;
+  const nEnt = new Set(l.map(a=>a.client)).size;
+  $("#com-clients").innerHTML = topC.length ? topC.map(c=>{
+      const t = c.gagnees+c.perdues;
+      BULLES["cl:"+c.nom] = {titre:c.nom, lignes:[
+        [`${fmt(c.ca)} MAD`, "chiffre d'affaires décroché, HT"], [pct(c.ca/totCa), "du CA décroché"],
+        [`${c.gagnees} sur ${t}`, "affaires gagnées sur tranchées"],
+        [pct(c.sT ? c.sG/c.sT : null), "des m² tranchés gagnés (accrochage)"],
+        ...(c.nego ? [[pluriel(c.nego, "offre"), "en négociation"]] : [])]};
+      return `<div class="ch large" tabindex="0" data-bulle="cl:${esc(c.nom)}">
+        <div class="nom"><b>${esc(c.nom)}</b><span>${c.gagnees} gagnée${c.gagnees>1?"s":""} sur ${t} tranchée${t>1?"s":""}${
+          c.nego ? ` · ${c.nego} en négo` : ""}</span></div>
+        <div class="jauge nue" role="img" aria-label="${esc(pct(c.ca/totCa)+" du CA décroché")}">
+          <i style="width:${(c.ca/maxCl*100).toFixed(1)}%"></i></div>
+        <div class="val"><b>${pct(c.ca/totCa)}</b><span>${fmt(c.ca)} MAD</span></div></div>`;
+    }).join("") + `<div class="pied-carte"><span>${clients.length>2 ? `Les 3 premiers pèsent <b style="color:var(--ink)">${
+        pct(clients.slice(0,3).reduce((s,c)=>s+c.ca,0)/totCa)}</b> du CA décroché · ` : ""}${pluriel(nEnt, "entreprise")} consultée${nEnt>1?"s":""}</span></div>`
+    : `<div class="pas-de">Aucune affaire décrochée pour ce choix.</div>`;
+  const tri=trier(filtrer("t-com",stats),"t-com",{k:"surfaceGagnee",s:-1});
+  $("#t-com tbody").innerHTML = tri.length ? tri.map(s=>{
+    const bt = s.transformation>=.5?"b-pos":s.transformation>=.25?"b-warn":"b-crit";
+    const bc = s.conversion>=.4?"b-pos":s.conversion>=.15?"b-warn":"b-crit";
+    const cp = (s.puMoyen&&puG&&s.puMoyen<puG*.95) ? "color:var(--crit)" : "";
+    const et = !s.fiable&&s.transformation!=null ? ` <span style="color:var(--warn)">∗</span>` : "";
+    return `<tr><td class="l">${s.nom}</td><td>${s.gagnees}</td><td>${s.perdues}</td>
+      <td>${s.enNego||"—"}</td><td>${fmt(s.surfaceGagnee)}</td><td>${fmt(s.surfaceNego)}</td>
+      <td><span class="badge ${bt}">${pct(s.transformation)}</span>${et}</td>
+      <td><span class="badge ${bc}">${pct(s.conversion)}</span></td>
+      <td style="${cp}">${fmt(s.puMoyen)}</td><td>${pct(s.margeMoy,1)}</td>
+      <td>${s.delaiMoy==null?"—":fmt(s.delaiMoy)+" j"}</td></tr>`;
+  }).join("") : rien("t-com", 11, "Aucune affaire.");
+  const nMod = l.filter(a=>a.statutModifie).length, nTr = atr.length, nVieux = dorm.length;
+  if(!nMod) etat.mod = false;
+  if(!nTr) etat.tr = false;
+  if(!nVieux) etat.vieux = false;
+  for(const [id, n, actif, texte] of [["#f-mod", nMod, etat.mod, "Changés dans le cockpit"],
+      ["#f-tr", nTr, etat.tr, "À trancher"], ["#f-vieux", nVieux, etat.vieux, "Sans réponse depuis 6 mois"]]){
+    const b = $(id); b.hidden = !n; b.setAttribute("aria-pressed", String(!!actif)); b.textContent = `${texte} (${n})`;
+  }
+  const base = etat.mod ? l.filter(a=>a.statutModifie) : etat.tr ? atr : etat.vieux ? dorm : l;
+  const ta=trier(filtrer("t-aff", base),"t-aff",{k:"surface",s:-1});
+  $("#n-aff").textContent = pluriel(l.length, "affaire")
+    + (sourceStatut()==="recensement" ? " · source : recensement des dossiers 01 COMMERCIAL" : "")
+    + (SERVEUR.actif ? " · statut modifiable dans la colonne Statut, enregistré aussitôt"
+                     : " · statuts en lecture seule : ouvrez le cockpit par l'icône « Cockpit NEW PREFA » pour les changer");
+  $("#t-aff tbody").innerHTML = ta.length ? ta.map(a=>{
+    const bm=a.margeReelle==null?"b-neutre":a.margeReelle>=(a.margeVendue??0)?"b-pos":a.margeReelle>=0?"b-warn":"b-crit";
+    return `<tr><td class="l">${a.affaire}<div class="sous">${a.reference}</div></td>
+      <td class="l">${a.client}</td><td class="l">${a.commercial}</td>
+      <td class="l">${celluleStatut(a)}</td>
+      <td>${fmt(a.surface)}</td><td>${fmt(a.pu)}</td><td>${a.ca?fmt(a.ca):"—"}</td>
+      <td>${pct(a.margeVendue,1)}</td>
+      <td>${a.margeReelle==null?"—":`<span class="badge ${bm}">${pct(a.margeReelle,1)}</span>`}</td></tr>`;
+  }).join("") : rien("t-aff", 9, "Aucune affaire ne correspond.");
+  const orph = D.orphelins || [], zo = $("#orphelins");
+  zo.hidden = !orph.length;
+  if(orph.length) zo.innerHTML = `<b>${orph.length} choix sans affaire retrouvée</b> — la ligne a été renommée
+    ou déplacée dans le fichier maître ; le statut n'est pas appliqué. Choisissez-le à nouveau sur la bonne
+    ligne, puis retirez l'ancien choix :` + orph.map(s=>`<div style="margin-top:8px">« ${esc(s.statut)} » pour
+    ${esc(s.client)} – ${esc(s.affaire)} (${esc(s.reference)}), choisi le ${jourDe(s.decide_le)}
+    <button class="btn" type="button" data-retirer="${Number(s.id)}">Retirer</button></div>`).join("");
+  $("#histo").hidden = !SERVEUR.actif;
+}
+function phaseDe(a){
+  const e = norm(a.etatProjet);
+  if(e.includes("ACHEV")) return "Achevé";
+  if(e.includes("COURS")) return "En cours";
+  if(a.etatProjet) return a.etatProjet;             // autre état saisi (suspendu…) : affiché tel quel
+  return (a.avancement??0) >= .95 ? "Achevé" : "En cours";
+}
+const ORIGINE_DATE = {"reference du contrat":"date du contrat",
+  "date du fichier maitre":"date du fichier maître, faute de contrat trouvé",
+  "dates reelles fournies":"début réel du chantier"};
+function chantiersTravaux(){
+  const liv = {}, fac = {};
+  for(const x of D.livraisons){
+    const l = liv[x.reference] ??= {lignes:0, bons:new Set(), der:null};
+    l.lignes++; if(x.bl) l.bons.add(String(x.bl).trim());
+    if(x.date && (!l.der || x.date>l.der)) l.der = x.date;
+  }
+  for(const f of D.factures){
+    const g = fac[f.reference] ??= {n:0, der:null};
+    g.n++; if(f.date && (!g.der || f.date>g.der)) g.der = f.date;
+  }
+  return D.affaires.filter(a=>a.decrochee && a.surface>0).map(a=>{
+    const l = liv[a.reference], g = fac[a.reference], phase = phaseDe(a);
+    return Object.assign(a, {phase, enCours: phase!=="Achevé",
+      nLignes: l?.lignes||0, nBons: l ? (l.bons.size||l.lignes) : 0, derniereLiv: l?.der||null,
+      nFactures: g?.n||0, derniereFac: g?.der||null});
+  });
+}
+function infoChantier(a){
+  const l = [[pct(a.avancement), "avancement facturé"],
+    [`${fmt(a.surfaceFacturee)} / ${fmt(a.surface)} m²`, "surface facturée / vendue"]];
+  if(a.ca) l.push([`${fmt(a.reste)} MAD`, "reste à facturer, HT"]);
+  if(a.dateContrat) l.push([leJour(a.dateContrat), ORIGINE_DATE[a.origineDate] || a.origineDate || "date du contrat"]);
+  l.push(a.nLignes ? [pluriel(a.nBons, "bon"), `de livraison, le dernier le ${leJour(a.derniereLiv)}`]
+                   : ["—", "aucune livraison enregistrée"]);
+  l.push(a.nFactures ? [pluriel(a.nFactures, "facture"), a.derniereFac ? `la dernière datée du ${leJour(a.derniereFac)}` : "non datées"]
+                     : ["—", "aucune facture"]);
+  return {titre:`${a.affaire||a.reference} · ${a.reference}`, lignes:l};
+}
+function rendreTravaux(){
+  viderBulles("ch:");
+  const ch = chantiersTravaux(), auj = new Date();
+  const enc = ch.filter(a=>a.enCours), ach = ch.filter(a=>!a.enCours);
+  const sEnc = enc.reduce((s,a)=>s+a.surface,0), sFac = enc.reduce((s,a)=>s+a.surfaceFacturee,0);
+  const aSolder = ach.filter(a=>(a.avancement??0)<.95);
+  const resteSolder = aSolder.reduce((s,a)=>s+Math.max(0,a.reste),0);
+  const liv30 = D.livraisons.filter(x=>x.date && x.date<=auj && auj-x.date<=30*JOUR);
+  const bons30 = new Set(liv30.map(x=>x.bl ? "b"+String(x.bl).trim() : "l"+x.reference+leJour(x.date))).size;
+  const derLiv = D.livraisons.reduce((m,x)=>x.date && (!m || x.date>m) ? x.date : m, null);
+  $("#k-tvx").innerHTML = [
+    ["Chantiers en cours", fmt(enc.length), `${fmt(sEnc)} m² vendus`],
+    ["Avancement facturé", pct(sEnc ? sFac/sEnc : null),
+      `${fmt(sFac)} m² facturés · ${fmt(Math.max(0, sEnc-sFac))} m² restants`],
+    ["Achevés à solder", fmt(aSolder.length), aSolder.length ? `${fmt(resteSolder)} MAD HT à facturer`
+      : ach.length ? `les ${fmt(ach.length)} chantiers achevés sont facturés` : "aucun chantier achevé"],
+    ["Livraisons sur 30 jours", `${fmt(bons30)}<small>bon${bons30>1?"s":""}</small>`,
+      !D.livraisons.length ? "aucune livraison saisie"
+      : `${pluriel(new Set(liv30.map(x=>x.reference)).size, "chantier")} · la dernière le ${leJour(derLiv)}`],
+  ].map(([k,v,d])=>`<div><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join("");
+  const avec = enc.filter(a=>a.surfaceFacturee>0).sort((x,y)=>(y.avancement??0)-(x.avancement??0));
+  const sans = enc.filter(a=>!(a.surfaceFacturee>0))
+    .sort((x,y)=>(x.dateContrat??Infinity)-(y.dateContrat??Infinity) || 0);
+  const ligne = a => {
+    BULLES["ch:"+a.reference] = infoChantier(a);
+    const facture = a.surfaceFacturee>0;
+    const sous = [a.reference, a.dateContrat ? "depuis "+ecoule(a.dateContrat) : "",
+      a.phase!=="En cours" ? a.phase : "", facture && a.derniereLiv ? "livré le "+court(a.derniereLiv) : ""]
+      .filter(Boolean).join(" · ");
+    const tete = `<div class="ch" tabindex="0" data-bulle="ch:${esc(a.reference)}">
+      <div class="nom"><b>${esc(a.affaire||a.reference)}</b><span>${esc(sous)}</span></div>`;
+    if(facture) return tete + `<div class="jauge" role="img" aria-label="Avancement facturé ${pct(a.avancement)}">
+        <i style="width:${(Math.min(1, a.avancement??0)*100).toFixed(1)}%"></i></div>
+      <div class="val"><b>${pct(a.avancement)}</b><span>${fmt(a.surfaceFacturee)} / ${fmt(a.surface)} m²</span></div></div>`;
+    const etat = a.nLignes ? `${pluriel(a.nBons, "bon")} livré${a.nBons>1?"s":""}, le dernier le ${court(a.derniereLiv)}`
+      : a.nFactures ? `${pluriel(a.nFactures, "facture")} sans surface (acompte ?), rien de livré`
+      : "ni livraison ni facture enregistrée";
+    return tete + `<div class="etat-ch">${esc(etat)}</div>
+      <div class="val"><b>${fmt(a.surface)} m²</b><span>vendus</span></div></div>`;
+  };
+  const bloc = (titre, l) => l.length ? `<div class="ch-bloc"><h3 class="groupe">${titre}
+      <span style="font-weight:400">${l.length}</span></h3>${l.map(ligne).join("")}</div>` : "";
+  const soldes = ach.length - aSolder.length;
+  $("#tvx-encours").innerHTML = (enc.length
+      ? bloc("Facturation commencée", avec) + bloc("Rien de facturé pour l'instant", sans)
+      : `<div class="pas-de">Aucun chantier en cours.</div>`)
+    + `<div class="pied-carte"><span>${pluriel(ach.length, "chantier")} achevé${ach.length>1?"s":""}${
+        ach.length ? `, dont ${fmt(soldes)} soldé${soldes>1?"s":""}` : ""}</span>
+      <button class="btn" type="button" data-ouvrir="pli-ch">Voir les ${fmt(ch.length)} chantiers</button></div>`;
+  const groupes = [];
+  if(aSolder.length) groupes.push({cl:"b-warn", ic:"!", lib:"À facturer", titre:"Achevés, pas entièrement facturés",
+    items:[...aSolder].sort((x,y)=>(y.reste||0)-(x.reste||0)).map(a=>({a,
+      d:`${fmt(a.surfaceFacturee)} sur ${fmt(a.surface)} m² facturés`,
+      v: a.ca ? `<b>${fmt(Math.max(0, a.reste))}</b> MAD` : `<b>${pct(a.avancement)}</b>`}))});
+  const arretes = enc.filter(a=>!(a.surfaceFacturee>0) && a.dateContrat && auj-a.dateContrat > 60*JOUR)
+    .sort((x,y)=>x.dateContrat-y.dateContrat);
+  if(arretes.length) groupes.push({cl:"b-warn", ic:"!", lib:"À vérifier", titre:"En cours depuis plus de 2 mois, rien de facturé",
+    items:arretes.map(a=>({a, d:`contrat du ${leJour(a.dateContrat)} · `
+      + (a.nLignes ? `${pluriel(a.nBons, "bon")} livré${a.nBons>1?"s":""}` : "rien de livré"),
+      v:`<b>${ecoule(a.dateContrat)}</b>`}))});
+  const depasses = ch.filter(a=>(a.avancement??0)>1.05).sort((x,y)=>y.avancement-x.avancement);
+  if(depasses.length) groupes.push({cl:"b-neutre", ic:"i", lib:"À régulariser", titre:"Facturé au-delà de la surface vendue",
+    note:"Avenant à établir, ou surface vendue à corriger dans le recensement.",
+    items:depasses.map(a=>({a, d:`${fmt(a.surfaceFacturee)} m² facturés pour ${fmt(a.surface)} vendus`,
+      v:`<b>+${pct(a.avancement-1)}</b>`}))});
+  const nAtt = new Set(groupes.flatMap(g=>g.items.map(it=>it.a.reference))).size;
+  $("#tvx-att-sous").textContent = nAtt ? `${pluriel(nAtt, "chantier")} à regarder` : "Rien à signaler";
+  $("#tvx-attention").innerHTML = htmlAttention(groupes,
+    "Rien à signaler : chantiers achevés facturés, aucun chantier bloqué.");
+  rendreTableChantiers(); rendreLivraisons(); rendreCouts();
+}
+function rendreTableChantiers(){
+  const ch = chantiersTravaux(), nEnc = ch.filter(a=>a.enCours).length, nAch = ch.length-nEnc;
+  const t = trier(filtrer("t-ch", ch), "t-ch", {k:"dateContrat", s:-1});
+  $("#n-ch").textContent = `${pluriel(ch.length, "chantier")} décroché${ch.length>1?"s":""} : ${fmt(nEnc)} en cours, `
+    + `${fmt(nAch)} achevé${nAch>1?"s":""} · surface, facturation et livraisons`;
+  $("#t-ch tbody").innerHTML = t.length ? t.map(a=>`<tr>
+      <td class="l">${esc(a.affaire||a.reference)}<div class="sous">${esc(a.reference)} · ${esc(a.client)}</div></td>
+      <td class="l">${esc(a.phase)}</td><td>${leJour(a.dateContrat)}</td>
+      <td>${fmt(a.surface)}</td><td>${a.surfaceFacturee ? fmt(a.surfaceFacturee) : "—"}</td>
+      <td>${pct(a.avancement)}</td><td>${a.ca ? fmt(a.reste) : "—"}</td>
+      <td>${a.nLignes ? fmt(a.nBons) : "—"}</td><td>${leJour(a.derniereLiv)}</td></tr>`).join("")
+    : rien("t-ch", 9, "Aucun chantier décroché.");
+  const s = t.reduce((x,a)=>x+a.surface,0), sf = t.reduce((x,a)=>x+a.surfaceFacturee,0);
+  $("#t-ch tfoot").innerHTML = t.length>1 ? `<tr><td class="l" colspan="3">${filtreActif("t-ch")
+      ? `Total des ${t.length} chantiers affichés` : "Total"}</td>
+    <td>${fmt(s)}</td><td>${fmt(sf)}</td><td>${pct(s ? sf/s : null)}</td>
+    <td>${fmt(t.reduce((x,a)=>x+(a.ca ? a.reste : 0),0))}</td><td>${fmt(t.reduce((x,a)=>x+a.nBons,0))}</td><td></td></tr>` : "";
+}
+const qte = (q, u) => q==null ? "—" : `${fmt(q, q%1 ? 2 : 0)}${u ? " "+esc(u) : ""}`;
+function rendreLivraisons(){
+  const L=D.livraisons, lf=filtrer("t-liv",L), tl=trier(lf,"t-liv",{k:"date",s:-1});
+  const bons=new Set(L.map(x=>String(x.bl).trim()).filter(Boolean)).size, nCh=new Set(L.map(x=>x.reference)).size;
+  const der=L.reduce((m,x)=>x.date && (!m || x.date>m) ? x.date : m, null);
+  $("#n-liv").textContent = L.length
+    ? `${pluriel(L.length, "ligne")} · ${pluriel(bons, "bon")} · ${pluriel(nCh, "chantier")} · la dernière le ${leJour(der)}`
+    : "Onglet prêt, en attente de saisie";
+  $("#t-liv tbody").innerHTML = tl.length ? tl.map(x=>`<tr>
+      <td class="l">${esc(x.affaire||x.reference)}<div class="sous">${esc(x.reference)}</div></td>
+      <td>${leJour(x.date)}</td><td class="l">${esc(x.designation)}</td>
+      <td>${qte(x.quantite,x.unite)}</td>
+      <td class="l">${esc(x.bl)||"—"}${x.fournisseur ? `<div class="sous">${esc(x.fournisseur)}</div>` : ""}</td></tr>`).join("")
+    : rien("t-liv", 5, `Renseignez l'onglet LIVRAISONS du classeur — date, désignation, quantité,
+        bon de livraison — et ce tableau se remplira seul.`);
+  const des=new Set(lf.map(x=>x.designation)), un=new Set(lf.map(x=>x.unite));
+  $("#t-liv tfoot").innerHTML = (lf.length>1 && des.size===1 && un.size===1)
+    ? `<tr><td class="l" colspan="3">Total · ${esc([...des][0])} · ${lf.length} lignes</td>
+        <td>${qte(lf.reduce((s,x)=>s+(x.quantite||0),0), [...un][0])}</td><td></td></tr>` : "";
+}
+function rendreCouts(){
+  const ch = chantiersTravaux().filter(a=>a.budget>0 || a.reel>0);
+  const t = trier(filtrer("t-perf", ch), "t-perf", {k:"budget", s:-1});
+  const tr = ch.reduce((s,a)=>s+a.reel,0), tm = ch.reduce((s,a)=>s+a.reelMesure,0);
+  $("#n-cout").textContent = ch.length
+    ? `${pluriel(ch.length, "chantier")} chiffré${ch.length>1?"s":""} · ${pct(tr ? tm/tr : null)} du coût imputé est réel, le reste reprend le budget`
+    : "Aucun budget disponible";
+  $("#t-perf tbody").innerHTML = t.length ? t.map(a=>`<tr>
+      <td class="l">${esc(a.affaire||a.reference)}<div class="sous">${esc(a.reference)}</div></td>
+      <td>${pct(a.avancement)}</td><td>${fmt(a.budget)}</td><td>${fmt(a.reel)}</td>
+      <td>${pct(a.partReelle)}</td></tr>`).join("")
+    : rien("t-perf", 5, "Aucun budget disponible.");
+  const b = t.reduce((s,a)=>s+a.budget,0), r = t.reduce((s,a)=>s+a.reel,0), m = t.reduce((s,a)=>s+a.reelMesure,0);
+  $("#t-perf tfoot").innerHTML = t.length>1 ? `<tr><td class="l" colspan="2">${filtreActif("t-perf")
+      ? `Total des ${t.length} chantiers affichés` : "Total"}</td>
+    <td>${fmt(b)}</td><td>${fmt(r)}</td><td>${pct(r ? m/r : null)}</td></tr>` : "";
+}
+const fmtAxe = v => v>=1e6 ? `${(v/1e6).toLocaleString("fr-FR",{maximumFractionDigits:1})} M`
+  : v>=1e3 ? `${(v/1e3).toLocaleString("fr-FR",{maximumFractionDigits:0})} k` : fmt(v);
+function echelle(max, entier){
+  if(!(max>0)) return {pas:1, haut:entier ? 4 : 1};
+  const brut = max/4, p = 10**Math.floor(Math.log10(brut)), r = brut/p;
+  let pas = (r<=1 ? 1 : r<=2 ? 2 : r<=2.5 ? 2.5 : r<=5 ? 5 : 10)*p;
+  if(entier) pas = Math.max(1, Math.round(pas));
+  return {pas, haut: Math.ceil(max/pas - 1e-9)*pas};
+}
+const f1 = v => v.toFixed(1);
+const barre = (x, y, w, h) => { const r = Math.min(4, w/2, h);     // haut arrondi de 4 px, base carrée
+  return `M${f1(x)},${f1(y+h)}V${f1(y+r)}Q${f1(x)},${f1(y)} ${f1(x+r)},${f1(y)}H${f1(x+w-r)}`
+    + `Q${f1(x+w)},${f1(y)} ${f1(x+w)},${f1(y+r)}V${f1(y+h)}Z`; };
+function graphiqueColonnes(el, {series, points, format=fmtAxe, etiquette=fmt, entier=false, aria=""}){
+  const W = Math.max(300, Math.floor(el.clientWidth || 560)), H = 220, G = 46, Dr = 4, T = 20;
+  const B = points.some(p=>p.an) ? 36 : 24, bas = H - B;
+  const max = Math.max(0, ...points.flatMap(p=>p.v.filter(v=>v>0)));
+  const {pas, haut} = echelle(max, entier);
+  const y = v => T + (bas-T)*(1 - v/haut);
+  const n = Math.max(1, points.length), bande = (W - G - Dr)/n, nS = series.length;
+  const ep = Math.max(3, Math.min(24, (bande*0.62 - (nS-1)*2)/nS)), larg = nS*ep + (nS-1)*2;
+  const pasNom = Math.max(1, Math.ceil(34/bande));      // un libellé de mois tient dans 34 px environ
+  let s = "", anPrec = null;
+  for(let t=0; t<=haut+1e-9; t+=pas) s += `<line class="grille" x1="${G}" x2="${W-Dr}" y1="${f1(y(t))}" y2="${f1(y(t))}"/>`
+    + `<text class="axe" x="${G-8}" y="${f1(y(t)+4)}" text-anchor="end">${esc(format(t))}</text>`;
+  points.forEach((p,i)=>{
+    const x0 = G + i*bande, cx = x0 + bande/2;
+    s += `<g class="col" tabindex="0" role="img" data-bulle="${esc(p.cle)}" aria-label="${esc(p.aria||p.x)}">`
+      + `<rect class="bande" x="${f1(x0+1)}" y="${T-8}" width="${f1(bande-2)}" height="${f1(bas-T+8)}" rx="6"/>`;
+    p.v.forEach((v,k)=>{ if(!(v>0)) return; const bx = cx - larg/2 + k*(ep+2), by = y(v);
+      s += `<path d="${barre(bx, by, ep, bas-by)}" fill="${series[k].couleur}"${p.partiel ? ` fill-opacity=".45"` : ""}/>`; });
+    s += `</g>`;
+    if((n-1-i) % pasNom === 0){
+      s += `<text class="axe" x="${f1(cx)}" y="${bas+15}" text-anchor="middle">${esc(p.x)}</text>`;
+      if(p.an && p.an!==anPrec) s += `<text class="axe" x="${f1(cx)}" y="${bas+28}" text-anchor="middle">${esc(p.an)}</text>`;
+      if(p.an) anPrec = p.an;
+    }
+  });
+  if(nS===1 && max>0){ const i = points.findIndex(p=>p.v[0]===max), cx = G + i*bande + bande/2;
+    s += `<text class="etiq" x="${f1(Math.min(Math.max(cx, G+30), W-Dr-30))}" y="${f1(y(max)-7)}" text-anchor="middle">${esc(etiquette(max))}</text>`; }
+  s += `<line class="base" x1="${G}" x2="${W-Dr}" y1="${bas}" y2="${bas}"/>`;
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="group" aria-label="${esc(aria)}">${s}</svg>`;
+}
+const moisCourt = m => { const [a,mo] = m.split("-").map(Number); return new Date(a,mo-1,1).toLocaleDateString("fr-FR",{month:"short"}); };
+function listeMois(debut, fin){
+  const out=[]; let [a,m] = debut.split("-").map(Number); const [af,mf] = fin.split("-").map(Number);
+  while(a<af || (a===af && m<=mf)){ out.push(`${a}-${String(m).padStart(2,"0")}`); if(++m>12){ m=1; a++; } }
+  return out;
+}
+let _redim = null;
+addEventListener("resize", ()=>{ clearTimeout(_redim);
+  _redim = setTimeout(()=>{ if(D && (etat.vue==="facturation" || etat.vue==="stock")) rendre(); }, 150); });
+function rendreFacturation(){
+  viderBulles("fm:", "fr:");
+  const dec=D.affaires.filter(a=>a.decrochee), auj=new Date(), courant=moisDe(auj);
+  const ca=dec.reduce((s,a)=>s+a.ca,0), fact=dec.reduce((s,a)=>s+a.facture,0);
+  const avecReste=dec.filter(a=>a.reste>0.5), reste=avecReste.reduce((s,a)=>s+a.reste,0);
+  const factures=D.factures.map(f=>({...f, affaire:(D.parRef[f.reference]||{}).affaire||f.reference}));
+  const datees=factures.filter(f=>f.date), nonDatees=factures.filter(f=>!f.date);
+  const htND=nonDatees.reduce((s,f)=>s+f.ht,0);
+  const f90=datees.filter(f=>f.date<=auj && auj-f.date<=90*JOUR);
+  $("#k-fac").innerHTML = [
+    ["Facturé", `${fmt(fact)}<small>MAD HT</small>`, `${pct(ca ? fact/ca : null)} des ${fmt(ca)} MAD signés`],
+    ["Reste à facturer", `${fmt(reste)}<small>MAD HT</small>`, `sur ${pluriel(avecReste.length, "chantier")}`],
+    ["Facturé sur 90 jours", `${fmt(f90.reduce((s,f)=>s+f.ht,0))}<small>MAD HT</small>`,
+      `${pluriel(f90.length, "facture")} datée${f90.length>1?"s":""}`],
+    ["Factures sans date", fmt(nonDatees.length),
+      nonDatees.length ? `${fmt(htND)} MAD HT, ${pct(fact ? htND/fact : null)} du facturé` : "toutes les factures sont datées"],
+  ].map(([k,v,d])=>`<div><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join("");
+  const parMois={};
+  for(const f of datees){ const p = parMois[moisDe(f.date)] ??= {ht:0, n:0, ch:new Map()};
+    p.ht+=f.ht; p.n++; p.ch.set(f.affaire, (p.ch.get(f.affaire)||0)+f.ht); }
+  const cles=Object.keys(parMois).sort();
+  if(!cles.length) $("#fac-mois").innerHTML = `<div class="pas-de">Aucune facture datée.</div>`;
+  else{
+    const mois=listeMois(cles[0], courant>cles.at(-1) ? courant : cles.at(-1)).slice(-18);
+    graphiqueColonnes($("#fac-mois"), {series:[{nom:"Facturé HT", couleur:"var(--accent)"}],
+      aria:`Facturation HT par mois, de ${libMois(mois[0])} à ${libMois(mois.at(-1))}`,
+      points: mois.map((m,i)=>{
+        const p = parMois[m] || {ht:0, n:0, ch:new Map()};
+        BULLES["fm:"+m] = {titre: libMois(m) + (m===courant ? " · mois en cours" : ""), lignes: p.n
+          ? [[`${fmt(p.ht)} MAD`, "facturés HT"], [pluriel(p.n, "facture"), `pour ${pluriel(p.ch.size, "chantier")}`],
+             ...[...p.ch].sort((x,y)=>y[1]-x[1]).slice(0,4).map(([nom,v])=>[fmt(v), nom])]
+          : [["—", "aucune facture datée ce mois"]]};
+        return {cle:"fm:"+m, x:moisCourt(m), an:m.slice(0,4),
+          v:[p.ht], partiel:m===courant, aria:`${libMois(m)} : ${fmt(p.ht)} MAD HT`};
+      })});
+  }
+  $("#fac-mois-note").innerHTML = nonDatees.length ? `<p class="note-graphe"><span><b>${pluriel(nonDatees.length, "facture")}
+      sans date</b> (${fmt(htND)} MAD HT) ne figure${nonDatees.length>1?"nt":""} pas dans ce graphique.</span>
+      <button class="btn" type="button" data-voir="sansdate">Les voir</button></p>` : "";
+  const topR=[...avecReste].sort((x,y)=>y.reste-x.reste).slice(0,10);
+  $("#fac-reste-sous").textContent = avecReste.length
+    ? `${pluriel(avecReste.length, "chantier")} · ${fmt(reste)} MAD HT · les plus gros restes d'abord` : "Tout est facturé";
+  $("#fac-reste").innerHTML = topR.length ? topR.map(a=>{
+      BULLES["fr:"+a.reference] = {titre:`${a.affaire||a.reference} · ${a.reference}`, lignes:[
+        [`${fmt(a.reste)} MAD`, "reste à facturer, HT"], [`${fmt(a.facture)} / ${fmt(a.ca)} MAD`, "facturé / marché"],
+        [pct(a.pctFacture), "du montant facturé"], [pct(a.avancement), "de la surface facturée"],
+        [a.etatProjet || "—", "état du chantier"]]};
+      return `<div class="ch" tabindex="0" data-bulle="fr:${esc(a.reference)}">
+        <div class="nom"><b>${esc(a.affaire||a.reference)}</b><span>${esc(a.reference)}${
+          /ACHEV/.test(norm(a.etatProjet)) ? " · achevé" : ""}</span></div>
+        <div class="jauge" role="img" aria-label="${pct(a.pctFacture)} du marché facturé">
+          <i style="width:${(Math.min(1, Math.max(0, a.pctFacture??0))*100).toFixed(1)}%"></i></div>
+        <div class="val"><b>${fmt(a.reste)}</b><span>${pct(a.pctFacture)} facturé</span></div></div>`;
+    }).join("") + `<div class="pied-carte"><span>Jauge : part du marché déjà facturée</span>
+      <button class="btn" type="button" data-voir="chantiers">Voir les ${pluriel(dec.length, "chantier")}</button></div>`
+    : `<div class="pas-de">Tous les chantiers décrochés sont entièrement facturés.</div>`;
+  const groupes=[];
+  const aSolder=dec.filter(a=>a.surface>0 && phaseDe(a)==="Achevé" && (a.avancement??0)<.95).sort((x,y)=>y.reste-x.reste);
+  if(aSolder.length) groupes.push({cl:"b-warn", ic:"!", lib:"À facturer", titre:"Chantiers achevés pas entièrement facturés",
+    items:aSolder.map(a=>({a, d:`${pct(a.pctFacture)} facturé`, v:`<b>${fmt(Math.max(0, a.reste))}</b> MAD`}))});
+  if(nonDatees.length) groupes.push({cl:"b-warn", ic:"!", lib:"À dater", titre:"Factures sans date",
+    note:`${pluriel(nonDatees.length, "facture")}, ${fmt(htND)} MAD HT : aucun courriel « FACTURATION NPB » retrouvé. Les plus importantes :`,
+    items:[...nonDatees].sort((x,y)=>y.ht-x.ht).slice(0,3).map(f=>({a:{affaire:f.affaire, reference:f.reference},
+      d:f.surface ? `${fmt(f.surface)} m²` : "", v:`<b>${fmt(f.ht)}</b> MAD`})),
+    plus:`<button class="btn" type="button" data-voir="sansdate">Voir les ${pluriel(nonDatees.length, "facture")}</button>`});
+  const depasse=dec.filter(a=>a.ca>0 && a.facture>a.ca*1.01).sort((x,y)=>(y.facture-y.ca)-(x.facture-x.ca));
+  if(depasse.length) groupes.push({cl:"b-neutre", ic:"i", lib:"À régulariser", titre:"Facturé au-delà du marché",
+    note:"Avenant à établir, ou montant du marché à corriger dans le recensement.",
+    items:depasse.map(a=>({a, d:`+${pct(a.facture/a.ca-1)}`, v:`<b>+${fmt(a.facture-a.ca)}</b> MAD`}))});
+  const codes=factures.filter(f=>f.coherence==="a verifier"), sansMontant=factures.filter(f=>!(f.ht>0));
+  const pieces=[];
+  if(codes.length) pieces.push({a:{affaire:pluriel(codes.length, "facture"), reference:""},
+    d:"code affaire différent de celui du contrat", v:`<button class="btn" type="button" data-voir="code">Voir</button>`});
+  if(sansMontant.length) pieces.push({a:{affaire:pluriel(sansMontant.length, "facture"), reference:""},
+    d:`sans montant lu : ${[...new Set(sansMontant.map(f=>f.affaire))].join(", ")}`});
+  if(pieces.length) groupes.push({cl:"b-neutre", ic:"i", lib:"À vérifier", titre:"Pièces à contrôler", items:pieces});
+  $("#fac-att-sous").textContent = groupes.length ? `${pluriel(groupes.length, "sujet")} à traiter` : "Rien à signaler";
+  $("#fac-attention").innerHTML = htmlAttention(groupes,
+    "Rien à signaler : achevés facturés, factures datées, pièces cohérentes.");
+  const tf=trier(filtrer("t-fac",dec),"t-fac",{k:"reste",s:-1});
+  $("#n-fac-ch").textContent = `${pluriel(dec.length, "chantier")} décroché${dec.length>1?"s":""} · marché, facturé, reste, écart montant / surface`;
+  $("#t-fac tbody").innerHTML = tf.length ? tf.map(a=>{
+    const e=a.decalage;
+    return `<tr><td class="l">${esc(a.affaire||a.reference)}<div class="sous">${esc(a.reference)}</div></td>
+      <td>${fmt(a.ca)}</td><td>${fmt(a.facture)}</td><td>${fmt(a.reste)}</td>
+      <td>${pct(a.pctFacture)}</td><td>${pct(a.avancement)}</td>
+      <td${e!=null && Math.abs(e)<=5 ? ` style="color:var(--muted)"` : ""}>${e==null ? "—" : (e>0?"+":"")+e.toFixed(0)+" pts"}</td></tr>`;
+  }).join("") : rien("t-fac", 7, "Aucun chantier décroché.");
+  const tca=tf.reduce((s,a)=>s+a.ca,0), tfa=tf.reduce((s,a)=>s+a.facture,0);
+  $("#t-fac tfoot").innerHTML = tf.length ? `<tr><td class="l">${filtreActif("t-fac")?`Total des ${tf.length} lignes affichées`:"Total"}</td>
+    <td>${fmt(tca)}</td><td>${fmt(tfa)}</td><td>${fmt(tca-tfa)}</td><td>${pct(tca?tfa/tca:null)}</td><td></td><td></td></tr>` : "";
+  const fd=trier(filtrer("t-detail",factures),"t-detail",{k:"date",s:-1});
+  $("#n-fac").textContent = `${pluriel(factures.length, "pièce")} · ${pluriel(datees.length, "datée")}, ${fmt(nonDatees.length)} sans date`;
+  $("#t-detail tfoot").innerHTML = fd.length ? `<tr>
+    <td class="l" colspan="3">${filtreActif("t-detail")?`Total des ${fd.length} pièces affichées`:"Total"}</td>
+    <td>${fmt(fd.reduce((s,f)=>s+f.surface,0))}</td><td>${fmt(fd.reduce((s,f)=>s+f.ht,0))}</td><td></td></tr>` : "";
+  $("#t-detail tbody").innerHTML = fd.length ? fd.map(f=>`<tr>
+    <td class="l">${esc(f.affaire)}<div class="sous">${esc(f.reference)}</div></td><td class="l">${esc(f.feuille)}</td>
+    <td>${f.date?f.date.toLocaleDateString("fr-FR"):`<span class="badge b-warn">sans date</span>`}</td>
+    <td>${fmt(f.surface)}</td><td>${fmt(f.ht)}</td>
+    <td class="l">${f.coherence==="a verifier"?`<span class="badge b-warn">${esc(f.code)||"?"}</span>`
+      :`<span style="color:var(--muted)">${esc(f.code)||"—"}</span>`}</td></tr>`).join("")
+    : rien("t-detail", 6, "Aucune facture.");
+}
+const FAMILLES_STOCK = ["Ancrages TTM et accessoires", "Ancrages SARE", "Gaines, toron et tubes", "Consommables et outillage"];
+function familleStock(a){
+  const n = norm(a.article);
+  if(n.includes("SARE")) return FAMILLES_STOCK[1];
+  if(/TROMPLAQUE|BLOC ANCRAGE|MORS|CLAVETTE|ACCESSOIRE/.test(n)) return FAMILLES_STOCK[0];
+  if(/GAINE|TORON|TUBE/.test(n)) return FAMILLES_STOCK[2];
+  return FAMILLES_STOCK[3];
+}
+const qteTxt = (q, u) => q==null ? "—" : `${fmt(q, q%1 ? 2 : 0)}${u ? " "+u : ""}`;   // texte brut (bulles)
+const moisLong = d => d.toLocaleDateString("fr-FR", {month:"long", year:"numeric"});
+function rendreStock(){
+  viderBulles("sa:", "sm:", "sc:");
+  const S=D.stock||[], M=D.mouvements||[], auj=new Date();
+  if(!S.length){
+    $("#k-stk").innerHTML="";
+    $("#stk-articles").innerHTML=`<div class="pas-de">Aucun stock dans ce fichier. Créez SAISIE_STOCK.xlsx (py Stock.py --creer), puis ${relance()}.</div>`;
+    ["#stk-mois","#stk-chantiers","#stk-attention","#t-stk tbody","#t-stk tfoot","#t-mvt tbody"].forEach(q=>$(q).innerHTML="");
+    filtrer("t-stk",[]); filtrer("t-mvt",[]);
+    return;
+  }
+  const inv=S[0].dateInventaire;
+  for(const a of S){
+    a.aCompter = !inv || a.inventaire==null || a.etat==="a inventorier";
+    a.etatAffiche = a.aCompter ? "à inventorier" : a.etat==="stock negatif" ? "stock négatif" : (a.etat||"—");
+    a.famille = familleStock(a);
+  }
+  const hist={};
+  for(const m of M){ if(m.controle!=="OK" || !m.code || m.quantite==null) continue;
+    const h = hist[m.code] ??= {sorties:0, entrees:0};
+    if(m.type==="SORTIE") h.sorties+=m.quantite; else if(m.type==="RETOUR") h.sorties-=m.quantite;
+    else if(m.type==="ENTREE") h.entrees+=m.quantite; }
+  const sortiesDatees=M.filter(m=>m.type==="SORTIE" && m.date);
+  const premSortie=sortiesDatees.reduce((x,m)=>!x || m.date<x ? m.date : x, null);
+  const derSortie=sortiesDatees.reduce((x,m)=>!x || m.date>x ? m.date : x, null);
+  const nCompter=S.filter(a=>a.aCompter).length, nComptes=S.length-nCompter;
+  const valeur=S.reduce((t,a)=>t+(a.valeur||0),0);
+  const sansPrix=S.filter(a=>a.prix==null).length, sansSeuil=S.filter(a=>a.seuil==null).length;
+  const sous=S.filter(a=>!a.aCompter && a.etat==="sous le seuil"), neg=S.filter(a=>!a.aCompter && a.etat==="stock negatif");
+  const s30=sortiesDatees.filter(m=>m.date<=auj && auj-m.date<=30*JOUR);
+  const bons30=new Set(s30.map(m=>m.bon)).size, ch30=new Set(s30.map(m=>m.reference).filter(Boolean)).size;
+  $("#k-stk").innerHTML = [
+    ["Inventaire", inv ? `${fmt(nComptes)}<small>/ ${fmt(S.length)} articles</small>` : "non fait",
+      !inv ? "stock calculé depuis zéro" : nCompter ? `comptés au ${leJour(inv)} · ${fmt(nCompter)} à compter` : `complet au ${leJour(inv)}`],
+    ["Valeur du stock", sansPrix===S.length ? "—" : `${fmt(valeur)}<small>MAD</small>`,
+      nCompter || sansPrix ? `provisoire : ${[nCompter ? `${fmt(nCompter)} article${nCompter>1?"s":""} à compter` : "",
+        sansPrix ? `${fmt(sansPrix)} sans prix` : ""].filter(Boolean).join(", ")}` : "au prix d'achat"],
+    ["Sorties sur 30 jours", `${fmt(bons30)}<small>bon${bons30>1?"s":""}</small>`,
+      derSortie ? `${pluriel(ch30, "chantier")} livré${ch30>1?"s":""} · la dernière le ${leJour(derSortie)}` : "aucune sortie saisie"],
+    ["Sous le seuil", fmt(sous.length), sansSeuil===S.length ? "seuils minimum non renseignés"
+      : sous.length ? "à réapprovisionner" : "aucune alerte"],
+  ].map(([k,v,d])=>`<div><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join("");
+  $("#stk-sous").textContent = (inv ? `Inventaire du ${leJour(inv)} + mouvements depuis` : "Entrées − sorties + retours, depuis zéro")
+    + ` · ${window.TELEPHONE ? "touchez" : "survolez"} un article pour le détail`;
+  const familles=FAMILLES_STOCK.map(f=>({f, l:S.filter(a=>a.famille===f)})).filter(g=>g.l.length);
+  const ligneArt = a => {
+    const h = hist[a.code] || {sorties:0, entrees:0};
+    BULLES["sa:"+a.code] = {titre:`${a.article} · ${a.code}`, lignes:[
+      [a.aCompter ? "à inventorier" : qteTxt(a.stock, a.unite), a.aCompter ? "pas encore de quantité comptée" : "en stock"],
+      ...(a.aCompter ? [] : [[a.valeur==null ? "—" : `${fmt(a.valeur)} MAD`, "valeur au prix d'achat"]]),
+      [a.prix==null ? "—" : `${fmt(a.prix, 2)} MAD`, `prix d'achat par ${a.unite || "unité"}`],
+      [h.sorties ? qteTxt(h.sorties, a.unite) : "—", premSortie ? `sorti${h.sorties>1?"s":""} depuis ${moisLong(premSortie)}` : "sorties"],
+      [h.entrees ? qteTxt(h.entrees, a.unite) : "—", "reçu des fournisseurs"],
+      [a.seuil==null ? "—" : qteTxt(a.seuil, a.unite), "seuil minimum"]]};
+    const sousLigne = [a.code, !a.aCompter && a.valeur ? `${fmt(a.valeur)} MAD` : "",
+      h.sorties ? `${qteTxt(h.sorties, a.unite)} sorti${h.sorties>1?"s":""}` : ""].filter(Boolean).join(" · ");
+    const etatArt = a.aCompter ? `<span class="badge b-neutre">à inventorier</span>`
+      : a.etat==="stock negatif" ? `<span class="badge b-crit">✕ ${esc(qteTxt(a.stock, a.unite))}</span>`
+      : a.etat==="sous le seuil" ? `<span class="badge b-warn">! ${esc(qteTxt(a.stock, a.unite))}</span>`
+      : `<b>${fmt(a.stock, a.stock%1 ? 2 : 0)}</b> ${esc(a.unite)}`;
+    return `<div class="art" tabindex="0" data-bulle="sa:${esc(a.code)}"><div class="nom"><b>${esc(a.article)}</b>
+      <span>${esc(sousLigne)}</span></div><div class="val">${etatArt}</div></div>`;
+  };
+  $("#stk-articles").innerHTML = (inv ? `<div class="inv"><div class="inv-tete"><b>${fmt(nComptes)} article${nComptes>1?"s":""}
+        compté${nComptes>1?"s":""} sur ${fmt(S.length)}</b> à l'inventaire du ${leJour(inv)}${nCompter ? ` · ${fmt(nCompter)} à compter` : ""}</div>
+      <div class="segments" role="img" aria-label="${fmt(nComptes)} articles comptés sur ${fmt(S.length)}">${
+        nComptes ? `<i style="background:var(--accent);flex-grow:${nComptes}"></i>` : ""}${
+        nCompter ? `<i style="background:var(--accent-soft);flex-grow:${nCompter}"></i>` : ""}</div></div>` : "")
+    + `<div class="articles">${familles.map(g=>`<h3 class="groupe">${g.f}<span style="font-weight:400">${
+        inv ? `${g.l.filter(a=>!a.aCompter).length}/${g.l.length} comptés` : g.l.length}</span></h3>${g.l.map(ligneArt).join("")}`).join("")}</div>`;
+  const courant=moisDe(auj), moisS=listeMois(moisDe(new Date(auj.getFullYear(), auj.getMonth()-7, 1)), courant);
+  const parM={};
+  for(const m of M){ if(!m.date) continue; const k=moisDe(m.date); if(!moisS.includes(k)) continue;
+    const p = parM[k] ??= {s:new Set(), e:new Set(), ls:0, le:0, ch:new Set()};
+    if(m.type==="SORTIE"){ p.s.add(m.bon); p.ls++; if(m.reference) p.ch.add(m.affaire||m.reference); }
+    else if(m.type==="ENTREE"){ p.e.add(m.bon); p.le++; } }
+  graphiqueColonnes($("#stk-mois"), {entier:true, format:v=>fmt(v),
+    series:[{nom:"Bons de sortie", couleur:"var(--serie-1)"}, {nom:"Réceptions fournisseurs", couleur:"var(--serie-2)"}],
+    aria:`Bons de sortie et réceptions par mois, de ${libMois(moisS[0])} à ${libMois(courant)}`,
+    points: moisS.map((k,i)=>{
+      const p = parM[k] || {s:new Set(), e:new Set(), ls:0, le:0, ch:new Set()};
+      BULLES["sm:"+k] = {titre: libMois(k) + (k===courant ? " · mois en cours" : ""), lignes:[
+        [pluriel(p.s.size, "bon"), `de sortie · ${pluriel(p.ls, "ligne")}, ${pluriel(p.ch.size, "chantier")} livré${p.ch.size>1?"s":""}`],
+        [pluriel(p.e.size, "réception"), `fournisseur · ${pluriel(p.le, "ligne")}`]]};
+      return {cle:"sm:"+k, x:moisCourt(k), an:k.slice(0,4),
+        v:[p.s.size, p.e.size], partiel:k===courant,
+        aria:`${libMois(k)} : ${pluriel(p.s.size, "bon")} de sortie, ${pluriel(p.e.size, "réception")}`};
+    })});
+  const prixDe=Object.fromEntries(S.map(a=>[a.code,a.prix]));
+  const ch={};
+  for(const m of M){ if(m.controle!=="OK" || m.quantite==null) continue;
+    const add=(ref,nom,sens)=>{ if(!ref) return;
+      const c = ch[ref] ??= {ref, nom:nom||ref, valeur:0, lignes:0, bons:new Set(), sansPrix:0, der:null};
+      c.valeur+=sens*m.valeur; c.lignes++; c.bons.add(m.bon); if(prixDe[m.code]==null) c.sansPrix++;
+      if(m.date && (!c.der || m.date>c.der)) c.der=m.date; };
+    if(m.type==="SORTIE") add(m.reference, m.affaire, 1);
+    else if(m.type==="RETOUR") add(m.reference, m.affaire, -1);
+    else if(m.type==="TRANSFERT"){ add(m.reference, m.affaire, -1); add(m.vers, (D.parRef[m.vers]||{}).affaire, 1); } }
+  const lch=Object.values(ch), avecPrix=lch.some(c=>c.valeur>0);
+  const top=lch.sort((a,b)=>avecPrix ? b.valeur-a.valeur : b.bons.size-a.bons.size).slice(0,8);
+  const mx=Math.max(...top.map(c=>avecPrix ? c.valeur : c.bons.size), 1);
+  $("#stk-ch-sous").textContent = !lch.length ? "Aucune sortie rattachée à un chantier"
+    : avecPrix ? `Valeur au prix d'achat des articles chiffrés · ${pluriel(lch.length, "chantier")} livré${lch.length>1?"s":""}`
+    : "Nombre de bons de sortie (prix d'achat non renseignés)";
+  $("#stk-chantiers").innerHTML = top.length ? top.map(c=>{
+      BULLES["sc:"+c.ref] = {titre:`${c.nom} · ${c.ref}`, lignes:[
+        ...(avecPrix ? [[`${fmt(c.valeur)} MAD`, "valeur des articles chiffrés"]] : []),
+        [pluriel(c.bons.size, "bon"), `de sortie · ${pluriel(c.lignes, "ligne")}`],
+        ...(c.sansPrix ? [[pluriel(c.sansPrix, "ligne"), "d'articles sans prix, non valorisées"]] : []),
+        [leJour(c.der), "dernière sortie"]]};
+      const v = avecPrix ? c.valeur : c.bons.size;
+      return `<div class="ch large" tabindex="0" data-bulle="sc:${esc(c.ref)}">
+        <div class="nom"><b>${esc(c.nom)}</b><span>${pluriel(c.bons.size, "bon")} · le dernier le ${court(c.der)}</span></div>
+        <div class="jauge nue" role="img" aria-label="${esc(avecPrix ? fmt(v)+" MAD" : pluriel(v, "bon"))}">
+          <i style="width:${(Math.max(0,v)/mx*100).toFixed(1)}%"></i></div>
+        <div class="val"><b>${fmt(v)}</b><span>${avecPrix ? "MAD" : "bons"}</span></div></div>`;
+    }).join("") + `<div class="pied-carte"><span>${lch.length>top.length ? `Les ${top.length} premiers sur ${lch.length}` : ""}</span>
+      <button class="btn" type="button" data-voir="mouvements">Voir les mouvements</button></div>`
+    : `<div class="pas-de">Aucune sortie rattachée à un chantier.</div>`;
+  const groupes=[];
+  if(neg.length) groupes.push({cl:"b-crit", ic:"✕", lib:"Stock négatif", titre:"Une entrée ou l'inventaire manque",
+    items:neg.map(a=>({a:{affaire:a.article, reference:a.code}, v:`<b>${fmt(a.stock)}</b> ${esc(a.unite)}`}))});
+  if(sous.length) groupes.push({cl:"b-warn", ic:"!", lib:"À commander", titre:"Sous le seuil minimum",
+    items:sous.map(a=>({a:{affaire:a.article, reference:a.code}, d:`seuil ${qteTxt(a.seuil, a.unite)}`,
+      v:`<b>${fmt(a.stock)}</b> ${esc(a.unite)}`}))});
+  if(!inv) groupes.push({cl:"b-warn", ic:"!", lib:"À compter", titre:"Aucun inventaire daté",
+    note:"Les quantités additionnent les mouvements depuis zéro : renseignez l'onglet INVENTAIRE de SAISIE_STOCK.xlsx.", items:[]});
+  else if(nCompter) groupes.push({cl:"b-warn", ic:"!", lib:"À compter", titre:"Inventaire à terminer",
+    note:`${pluriel(nCompter, "article")} sur ${fmt(S.length)} sans quantité comptée au ${leJour(inv)} : saisissez-les dans l'onglet
+      INVENTAIRE de Suivi_de_stock\\SAISIE_STOCK.xlsx, enregistrez, puis ${relance()}.`,
+    items:familles.filter(g=>g.l.some(a=>a.aCompter)).map(g=>({a:{affaire:g.f, reference:""},
+      d:`${g.l.filter(a=>a.aCompter).length} à compter sur ${g.l.length}`})),
+    plus:`<button class="btn" type="button" data-voir="inventaire">Voir les ${pluriel(nCompter, "article")}</button>`});
+  const enAttente=M.filter(m=>m.controle && m.controle!=="OK");
+  if(enAttente.length) groupes.push({cl:"b-neutre", ic:"i", lib:"En attente", titre:"Lignes de bon à vérifier",
+    note:"Laissées telles qu'écrites sur le bon, sans article, jusqu'à votre vérification (projet et quantités).",
+    items:enAttente.map(m=>({a:{affaire:`Bon ${m.bon}`, reference:""},
+      d:[String(m.observation||"").replace(/^EN ATTENTE de v[ée]rification\s*:\s*/i, ""), m.affaire||m.reference]
+        .filter(Boolean).join(" · ") || m.controle}))});
+  if(!M.some(m=>m.type==="ENTREE")) groupes.push({cl:"b-neutre", ic:"i", lib:"À saisir", titre:"Aucune entrée fournisseur",
+    note:"Sans les réceptions, le stock ne peut que descendre.", items:[]});
+  const aCompleter=[];
+  if(sansPrix) aCompleter.push({a:{affaire:"Prix d'achat", reference:""},
+    d:`${pluriel(sansPrix, "article")} sans prix : valeur du stock incomplète`});
+  if(sansSeuil) aCompleter.push({a:{affaire:"Seuils minimum", reference:""},
+    d: sansSeuil===S.length ? "aucun seuil : pas d'alerte de réapprovisionnement possible" : `${pluriel(sansSeuil, "article")} sans seuil`});
+  if(aCompleter.length) groupes.push({cl:"b-neutre", ic:"i", lib:"À compléter", titre:"Onglet ARTICLES de SAISIE_STOCK.xlsx", items:aCompleter});
+  $("#stk-att-sous").textContent = groupes.length ? `${pluriel(groupes.length, "sujet")} à traiter` : "Rien à signaler";
+  $("#stk-attention").innerHTML = htmlAttention(groupes, "Rien à signaler : inventaire complet, aucun article sous le seuil.");
+  const tri=trier(filtrer("t-stk",S),"t-stk",{k:"code",s:1});
+  $("#n-stk").textContent = `${pluriel(S.length, "article")} · ` + (inv ? `inventaire du ${leJour(inv)} + entrées − sorties + retours`
+    : "entrées − sorties + retours, depuis zéro");
+  $("#t-stk tbody").innerHTML = tri.map(a=>{
+    const b=a.aCompter?"b-neutre":a.etat==="OK"?"b-pos":a.etat==="sous le seuil"?"b-warn":"b-crit";
+    const st=a.aCompter
+      ? `<span style="color:var(--muted)" title="Calcul provisoire : article pas encore compté">${fmt(a.stock)}</span>`
+      : `<b>${fmt(a.stock)}</b>`;
+    return `<tr><td class="l">${esc(a.article)}<div class="sous">${esc(a.code)} · ${esc(a.unite)}</div></td>
+      <td>${fmt(a.inventaire)}</td><td>${fmt(a.entrees)}</td><td>${fmt(a.sorties)}</td><td>${fmt(a.retours)}</td>
+      <td>${st}</td><td>${a.seuil==null?"—":fmt(a.seuil)}</td>
+      <td class="l"><span class="badge ${b}">${esc(a.etatAffiche)}</span></td>
+      <td>${a.prix==null?"—":fmt(a.prix,2)}</td><td>${a.valeur==null?"—":fmt(a.valeur)}</td></tr>`;
+  }).join("") || rien("t-stk", 10, "Aucun article.");
+  $("#t-stk tfoot").innerHTML=`<tr><td class="l" colspan="9">${filtreActif("t-stk")
+      ? `Valeur des ${tri.length} articles affichés` : "Valeur totale du stock"}${
+      tri.some(a=>a.aCompter) ? " — provisoire, inventaire incomplet" : ""}</td>
+    <td>${tri.every(a=>a.prix==null)?"—":fmt(tri.reduce((t,a)=>t+(a.valeur||0),0))}</td></tr>`;
+  const mf=filtrer("t-mvt",M), limite=filtreActif("t-mvt")?500:60;
+  const tm=trier(mf,"t-mvt",{k:"date",s:-1}).slice(0,limite);
+  $("#n-mvt").textContent = `${pluriel(M.length, "mouvement")}` + (filtreActif("t-mvt")
+    ? (mf.length>limite ? ` — les ${limite} premiers résultats affichés` : "")
+    : (M.length>limite ? ` — les ${limite} plus récents (un filtre cherche dans tous)` : ""));
+  $("#t-mvt tbody").innerHTML = tm.map(m=>{
+    const bt=m.type==="ENTREE"?"b-pos":m.type==="SORTIE"?"b-neutre":"b-warn";
+    return `<tr><td>${m.date?m.date.toLocaleDateString("fr-FR"):"—"}</td><td class="l"><span class="badge ${bt}">${esc(m.type)}</span></td>
+      <td class="l">${esc(m.bon)}</td><td class="l">${esc(m.article)||"—"}</td><td>${m.quantite==null?"—":fmt(m.quantite,m.quantite%1?2:0)+" "+esc(m.unite)}</td>
+      <td class="l">${esc(m.affaire||m.reference)||"—"}<div class="sous">${esc(m.reference)}${m.vers?" → "+esc(m.vers):""}</div></td>
+      <td class="l">${m.controle==="OK"?"":`<span class="badge b-crit">${esc(m.controle)}</span>`}</td></tr>`;
+  }).join("") || rien("t-mvt", 7, "Aucun mouvement.");
+}
+function rendre(){
+  if(etat.vue==="fiabilite") rendreFiabilite();
+  else if(etat.vue==="commercial") rendreCommercial();
+  else if(etat.vue==="travaux") rendreTravaux();
+  else if(etat.vue==="stock") rendreStock();
+  else rendreFacturation();
+  rendreBandeau();
+  const dec=D.affaires.filter(a=>a.decrochee).length;
+  $("#pied").textContent = `${D.affaires.length} affaires · ${dec} décrochées · ${D.factures.length} factures · `
+    + `${D.livraisons.length} livraisons · ${D.controles.length} constats`;
+}
+function ouvrir(v){
+  fermerFiltre(false);
+  etat.vue=v;
+  document.querySelectorAll("[data-vue]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.vue===v)));
+  ["fiabilite","commercial","travaux","facturation","stock"].forEach(x=>
+    document.getElementById("vue-"+x).hidden = (x!==v));
+  rendre(); window.scrollTo({top:0,behavior:"instant"});
+}
+document.querySelectorAll("[data-vue]").forEach(b=>b.addEventListener("click",()=>ouvrir(b.dataset.vue)));
+["f-com","f-cli"].forEach(id=>$("#"+id).addEventListener("change",e=>{
+  etat[id==="f-com"?"com":"cli"]=e.target.value; rendreCommercial(); }));
+$("#f-rech").addEventListener("input",e=>{ etat.rech=e.target.value; rendreCommercial(); });
+$("#f-reset").addEventListener("click",()=>{ etat.com=etat.cli=etat.rech=""; etat.mod=etat.tr=etat.vieux=false;
+  $("#f-com").value=""; $("#f-cli").value=""; $("#f-rech").value="";
+  delete FILTRE["t-com"]; delete FILTRE["t-aff"]; fermerFiltre(false); rendreCommercial(); });
+const basculer = cle => { const v = !etat[cle]; etat.mod = etat.tr = etat.vieux = false; etat[cle] = v; rendreCommercial(); };
+$("#f-mod").addEventListener("click",()=>basculer("mod"));
+$("#f-tr").addEventListener("click",()=>basculer("tr"));
+$("#f-vieux").addEventListener("click",()=>basculer("vieux"));
+const VOIR = {
+  nego:      ()=>{ etat.mod=etat.tr=etat.vieux=false; FILTRE["t-aff"]={statut:{sel:new Set(["En cours"])}}; return ["pli-aff", rendreCommercial]; },
+  vieux:     ()=>{ etat.mod=etat.tr=false; etat.vieux=true; delete FILTRE["t-aff"]; return ["pli-aff", rendreCommercial]; },
+  sansdate:  ()=>{ FILTRE["t-detail"]={date:{sel:new Set([""])}}; return ["pli-detail", rendreFacturation]; },
+  code:      ()=>{ FILTRE["t-detail"]={coherence:{sel:new Set(["Code à vérifier"])}}; return ["pli-detail", rendreFacturation]; },
+  factures:  ()=>{ delete FILTRE["t-detail"]; return ["pli-detail", rendreFacturation]; },
+  chantiers: ()=>{ delete FILTRE["t-fac"]; return ["pli-fac", rendreFacturation]; },
+  inventaire:()=>{ FILTRE["t-stk"]={etat:{sel:new Set(["à inventorier"])}}; return ["pli-stk", rendreStock]; },
+  mouvements:()=>{ delete FILTRE["t-mvt"]; return ["pli-mvt", rendreStock]; },
+};
+document.addEventListener("click", e=>{
+  const v = e.target.closest("[data-voir]"); if(!v || !VOIR[v.dataset.voir]) return;
+  const [pli, rendu] = VOIR[v.dataset.voir]();
+  fermerFiltre(false); rendu(); ouvrirPli(pli);
+});
+document.addEventListener("change",e=>{
+  const s=e.target.closest?.("select[data-statut]"); if(s) changerStatut(s.dataset.statut, s.value); });
+document.addEventListener("click",e=>{
+  const r=e.target.closest("[data-retour]");
+  if(r) return annulerStatut({reference:r.dataset.retour}, r.dataset.retour);
+  const o=e.target.closest("[data-retirer]");
+  if(o) annulerStatut({id:Number(o.dataset.retirer)}, null);
+});
+$("#histo").addEventListener("toggle",()=>{ if($("#histo").open) chargerHistorique(); });
+const RENDU = {"t-com":rendreCommercial, "t-aff":rendreCommercial, "t-his":rendreHistorique,
+  "t-ch":rendreTableChantiers, "t-perf":rendreCouts, "t-liv":rendreLivraisons,
+  "t-fac":rendreFacturation, "t-detail":rendreFacturation, "t-stk":rendreStock, "t-mvt":rendreStock};
+for(const id in RENDU) brancherTri(id, RENDU[id]);
+brancherFiltres(); brancherPanneau();
+let _bulle = null;
+function montrerBulle(cible, x, y){
+  const b = $("#bulle");
+  if(!cible){ _bulle = null; b.hidden = true; return; }
+  if(cible !== _bulle){
+    const info = BULLES[cible.dataset.bulle];
+    if(!info){ _bulle = null; b.hidden = true; return; }
+    _bulle = cible;
+    const t = document.createElement("div"); t.className = "bt"; t.textContent = info.titre;
+    b.replaceChildren(t, ...info.lignes.map(([v,l])=>{
+      const r = document.createElement("div"), vb = document.createElement("b"), lb = document.createElement("span");
+      r.className = "bl"; vb.textContent = v; lb.textContent = l; r.append(vb, lb); return r; }));
+    b.hidden = false;
+  }
+  placerBulle(x, y);
+}
+function placerBulle(x, y){
+  const b = $("#bulle"); if(!_bulle) return;
+  if(x==null){ const r = _bulle.getBoundingClientRect(); x = r.left + 24; y = r.bottom - 6; }   // au clavier : sous la ligne
+  const large = document.documentElement.clientWidth, haut = innerHeight, w = b.offsetWidth, h = b.offsetHeight;
+  let gx = x + 16, gy = y + 18;
+  if(gx + w > large - 12) gx = Math.max(12, x - w - 16);
+  if(gy + h > haut - 12) gy = Math.max(12, y - h - 14);
+  b.style.left = gx + "px"; b.style.top = gy + "px";
+}
+document.addEventListener("pointerover", e=>{
+  if(e.pointerType!=="touch") montrerBulle(e.target.closest?.("[data-bulle]"), e.clientX, e.clientY); });
+document.addEventListener("pointermove", e=>{ if(_bulle && e.pointerType!=="touch") placerBulle(e.clientX, e.clientY); });
+document.addEventListener("focusin", e=>{
+  const c = e.target.closest?.("[data-bulle]"); if(c || _bulle) montrerBulle(c); });
+document.addEventListener("scroll", ()=>{ if(_bulle) montrerBulle(null); }, true);
+const PLIS = (()=>{ try{ return JSON.parse(localStorage.getItem("cockpit.plis")||"{}") || {}; }catch(_){ return {}; } })();
+document.querySelectorAll("details.pli").forEach(d=>{
+  if(PLIS[d.id]) d.open = true;
+  d.addEventListener("toggle", ()=>{
+    if(!d.open && PAN.btn && d.contains(PAN.btn)) fermerFiltre(false);
+    PLIS[d.id] = d.open;
+    try{ localStorage.setItem("cockpit.plis", JSON.stringify(PLIS)); }catch(_){}
+  });
+});
+document.addEventListener("click", e=>{
+  const o = e.target.closest("[data-ouvrir]"); if(o) ouvrirPli(o.dataset.ouvrir); });
+async function charger(f, {garderVue=false, duServeur=false}={}){
+  $("#err").hidden=true;
+  try{
+    const lu = lireClasseur(await f.arrayBuffer());
+    if(!lu.affaires.length) throw new Error("l'onglet AFFAIRES ne contient aucune ligne exploitable.");
+    D = lu; SERVEUR.suit = duServeur;
+    appliquerStatuts();
+    const remplir=(sel,vals,choisi)=>{ const g=sel.options[0].outerHTML;
+      sel.innerHTML = g + vals.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");
+      sel.value = vals.includes(choisi) ? choisi : ""; return sel.value; };
+    garderVue = garderVue && !$("#app").hidden;   // rechargement : on garde l'onglet et les filtres
+    fermerFiltre(false);
+    if(!garderVue){ for(const id in FILTRE) delete FILTRE[id]; etat.mod=etat.tr=etat.vieux=false; }   // nouveau fichier : filtres remis à zéro
+    etat.com = remplir($("#f-com"), [...new Set(D.affaires.map(a=>a.commercial))].sort(), garderVue?etat.com:"");
+    etat.cli = remplir($("#f-cli"), [...new Set(D.affaires.map(a=>a.client))].sort(), garderVue?etat.cli:"");
+    $("#accueil").hidden=true; $("#app").hidden=false; $("#entete").hidden=false;
+    $("#source").textContent = f.name
+      + (duServeur && SERVEUR.classeur?.genere_le ? ` · généré le ${SERVEUR.classeur.genere_le}` : "");
+    if(garderVue) rendre(); else ouvrir("fiabilite");
+    return true;
+  }catch(err){
+    $("#err").textContent="Fichier non exploitable : "+err.message; $("#err").hidden=false;
+    if($("#accueil").hidden) informer("Fichier non exploitable : "+err.message, true);
+    return false;
+  }
+}
+function majServeur(e){
+  SERVEUR.classeur = e.classeur || null; SERVEUR.statuts = e.statuts || [];
+  if(Array.isArray(e.valeurs) && e.valeurs.length) SERVEUR.valeurs = e.valeurs;
+}
+const ACTU = {minuterie:null, masquer:null, vu:null};
+const duree = s => { s = Math.max(0, Math.round(s));
+  return s<60 ? `${s} s` : `${Math.floor(s/60)} min ${String(s%60).padStart(2,"0")} s`; };
+function majActu(a){
+  ACTU.vu = a;
+  const z = $("#actu"), b = $("#btn-actu"), enCours = a?.etat==="en cours";
+  const debut = a?.debut ? new Date(a.debut) : null;
+  const ecoule = debut ? ((a.fin ? new Date(a.fin) : new Date()) - debut)/1000 : 0;
+  b.disabled = enCours; $("#btn-actu-accueil").disabled = enCours;
+  b.textContent = enCours ? `Actualisation… ${duree(ecoule)}` : "Actualiser";
+  clearTimeout(ACTU.masquer);
+  if(!a || a.etat==="inactif"){ z.hidden = true; return; }
+  const pictos = {attente:"○", "en cours":`<span class="tourne" aria-hidden="true"></span>`,
+                  ok:"✓", avertissement:"!", echec:"✕"};
+  const heure = a.fin ? new Date(a.fin).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) : "";
+  const titre = enCours ? `Actualisation en cours · ${duree(ecoule)}`
+    : a.etat==="termine" ? `Données actualisées à ${heure} · ${duree(ecoule)}`
+    : "Actualisation interrompue";
+  const n = (a.etapes||[]).length;
+  z.className = "actu" + (a.etat==="termine" ? " ok" : a.etat==="echec" ? " err" : "");
+  z.innerHTML = `<div class="tete"><span>${esc(titre)}</span>${enCours ? "" :
+      `<button class="btn" type="button" data-fermer-actu>Fermer</button>`}</div>
+    <div class="etapes">${(a.etapes||[]).map((e,i)=>`<div class="etape ${esc(e.etat)}">
+      <span class="p">${pictos[e.etat]||"○"}</span><span>${i+1}/${n} ${esc(e.nom)}${
+      e.message ? ` — <span class="m">${esc(e.message)}</span>` : ""}</span></div>`).join("")}</div>
+    ${(a.avertissements||[]).map(t=>`<div class="note-actu">${esc(t)}</div>`).join("")}
+    ${enCours && a.ligne ? `<div class="journal-actu" title="${esc(a.ligne)}">${esc(a.ligne)}</div>` : ""}
+    ${!enCours && a.message ? `<p class="msg-actu">${esc(a.message)}</p>` : ""}
+    ${!enCours && a.detail?.length ? `<details><summary>Voir le détail</summary><pre>${esc(a.detail.join("\n"))}</pre></details>` : ""}`;
+  z.hidden = false;
+  if(a.etat==="termine" && !(a.etapes||[]).some(e=>e.etat!=="ok") && !(a.avertissements||[]).length)
+    ACTU.masquer = setTimeout(()=>{ z.hidden = true; }, 12000);
+}
+async function actualiser(){
+  if(!SERVEUR.actif || ACTU.vu?.etat==="en cours") return;
+  try{
+    const r = await api("api/actualiser", {});
+    majActu(r.actualisation); suivreActu();
+  }catch(err){ informer("Actualisation impossible : " + err.message, true); }
+}
+function suivreActu(){
+  clearTimeout(ACTU.minuterie);
+  ACTU.minuterie = setTimeout(async ()=>{
+    let a;
+    try{ a = (await api("api/actualiser")).actualisation; }
+    catch(err){ ACTU.minuterie = null; informer("Suivi de l'actualisation impossible : " + err.message, true); return; }
+    majActu(a);
+    if(a.etat==="en cours") return suivreActu();
+    ACTU.minuterie = null;
+    if(a.etat==="termine"){
+      try{ majServeur(await api("api/etat")); }catch(_){}
+      if(await chargerDuServeur(true)) informer("Données actualisées.");
+    } else informer("Actualisation interrompue : " + (a.message || "voir le détail"), true);
+  }, 1500);
+}
+async function chargerDuServeur(garderVue=false){
+  const c = SERVEUR.classeur;
+  if(!c?.existe){
+    $("#err").textContent = "COCKPIT_PT.xlsx est introuvable : cliquez sur Actualiser pour le créer.";
+    $("#err").hidden = false; $("#btn-actu-accueil").hidden = false; return false;
+  }
+  $("#btn-actu-accueil").hidden = true;
+  let r; try{ r = await fetch("COCKPIT_PT.xlsx",{cache:"no-store"}); }catch(_){ return false; }
+  if(!r.ok) return false;
+  const tampon = await r.arrayBuffer();
+  if(!await charger({name:c.nom, arrayBuffer:async()=>tampon}, {garderVue, duServeur:true})) return false;
+  SERVEUR.charge = c.modifie;
+  return true;
+}
+let _verif = false;
+async function verifier(){
+  if(!SERVEUR.actif || _verif) return;
+  _verif = true;
+  try{
+    const avant = JSON.stringify(SERVEUR.statuts), avait = !!D;
+    const e = await api("api/etat");
+    majServeur(e);
+    if(e.actualisation?.etat==="en cours" && !ACTU.minuterie){ majActu(e.actualisation); suivreActu(); return; }
+    const nouveau = SERVEUR.classeur?.existe && SERVEUR.classeur.modifie !== SERVEUR.charge;
+    if(nouveau && (SERVEUR.suit || !D)){
+      if(await chargerDuServeur(true) && avait) informer("Fichier régénéré : données rechargées.");
+    } else if(D && JSON.stringify(SERVEUR.statuts) !== avant){ appliquerStatuts(); rendre(); }
+  }catch(_){ /* programme arrêté : le prochain changement de statut le dira */ }
+  finally{ _verif = false; }
+}
+(async function demarrer(){
+  if(!/^https?:$/.test(location.protocol)) return;        // ouvert par double-clic : lecture seule
+  if(window.TELEPHONE) return;                            // application du téléphone : pas de programme local
+  let e; try{ e = await api("api/etat"); }catch(_){ return; }
+  if(e.app !== "cockpit-pt") return;
+  SERVEUR.actif = true; majServeur(e);
+  $("#btn-actu").hidden = false; $("#btn-tel").hidden = false;
+  await chargerDuServeur();
+  if(e.actualisation?.etat==="en cours"){ majActu(e.actualisation); suivreActu(); }
+  window.addEventListener("focus", verifier);
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) verifier(); });
+})();
+$("#btn-actu").addEventListener("click", actualiser);
+document.addEventListener("click", e=>{
+  if(e.target.closest("[data-actualiser]")) return actualiser();
+  if(e.target.closest("[data-fermer-actu]")){ clearTimeout(ACTU.masquer); $("#actu").hidden = true; }
+});
+$("#btn-choisir").addEventListener("click",()=>$("#fichier").click());
+$("#btn-rech").addEventListener("click",()=>$("#fichier").click());
+$("#fichier").addEventListener("change",e=>{ const f=e.target.files?.[0]; if(f) charger(f); e.target.value=""; });
+const depot=$("#depot");
+["dragenter","dragover"].forEach(ev=>depot.addEventListener(ev,e=>{e.preventDefault();depot.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>depot.addEventListener(ev,e=>{e.preventDefault();depot.classList.remove("over");}));
+depot.addEventListener("drop",e=>{ const f=e.dataTransfer?.files?.[0]; if(f) charger(f); });
+$("#btn-theme").addEventListener("click",()=>{
+  const r=document.documentElement;
+  const sombre = r.getAttribute("data-theme")==="dark"
+    || (!r.hasAttribute("data-theme") && matchMedia("(prefers-color-scheme:dark)").matches);
+  r.setAttribute("data-theme", sombre?"light":"dark");
+});
+const deB64url = s => Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")), c=>c.charCodeAt(0));
+function cleTelephone(){
+  const m = location.hash.match(/[#&]k=([A-Za-z0-9_-]{43})/);
+  if(m){ try{ localStorage.setItem("cockpit.cle", m[1]); }catch(_){} return deB64url(m[1]); }
+  try{ const k = localStorage.getItem("cockpit.cle"); if(k) return deB64url(k); }catch(_){}
+  return null;
+}
+async function demarrerTelephone(){
+  const r = document.documentElement;
+  r.classList.add("telephone");
+  document.querySelectorAll(".carte-tete p").forEach(p=>{ p.textContent = p.textContent.replace(/survolez/g, "touchez"); });
+  $("#accueil h1").textContent = "Cockpit NEW PREFA";
+  const sous = $("#accueil > p"); sous.textContent = "Chargement des données…";
+  const echec = texte => { sous.textContent = texte; sous.style.color = "var(--crit)"; };
+  if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+  const cle = cleTelephone();
+  if(!cle) return echec("Clé absente : ouvrez l'application avec le QR code du cockpit, sur le PC (bouton Téléphone).");
+  try{
+    if(!window.crypto?.subtle || typeof DecompressionStream === "undefined")
+      throw new Error("navigateur trop ancien : mettez l'iPhone à jour (iOS 16.4 ou plus récent)");
+    const rep = await fetch(window.TELEPHONE.donnees, {cache:"no-cache"});
+    if(!rep.ok) throw new Error(`données introuvables (réponse ${rep.status})`);
+    const brut = new Uint8Array(await rep.arrayBuffer());
+    if(String.fromCharCode(...brut.slice(0,4)) !== "NPB1") throw new Error("fichier de données inconnu");
+    const k = await crypto.subtle.importKey("raw", cle, "AES-GCM", false, ["decrypt"]);
+    let clair;
+    try{
+      clair = await crypto.subtle.decrypt({name:"AES-GCM", iv:brut.slice(4,16),
+        additionalData:new TextEncoder().encode("cockpit-pt-v1")}, k, brut.slice(16));
+    }catch(_){ throw new Error("clé incorrecte : scannez à nouveau le QR code du cockpit"); }
+    const texte = await new Response(new Blob([clair]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
+    const p = JSON.parse(texte);
+    if(!await charger({name:p.nom, arrayBuffer:async()=>({feuilles:p.feuilles})}))
+      throw new Error($("#err").textContent || "classeur illisible");
+    document.title = "Cockpit NEW PREFA";
+    $("#source").textContent = `Données du ${p.genere}` + (navigator.onLine===false ? " · hors connexion" : "");
+  }catch(e){
+    echec(navigator.onLine===false ? "Pas de réseau, et aucune donnée encore gardée sur ce téléphone."
+                                   : "Données non chargées : " + e.message + ".");
+  }
+}
+const chargerScript = src => new Promise((ok, ko)=>{
+  if(document.querySelector(`script[src="${src}"]`) && window.qrcode) return ok();
+  const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = ko; document.head.append(s); });
+async function ouvrirTelephone(){
+  let t;
+  try{ t = await api("api/telephone"); }catch(e){ return informer("Téléphone : " + e.message, true); }
+  const v = document.createElement("div");
+  v.className = "voile"; v.setAttribute("role", "dialog"); v.setAttribute("aria-modal", "true");
+  v.setAttribute("aria-label", "Application du téléphone");
+  const fermer = ()=>{ v.remove(); document.removeEventListener("keydown", echap); $("#btn-tel").focus(); };
+  const echap = e=>{ if(e.key==="Escape") fermer(); };
+  v.innerHTML = !t.installe
+    ? `<div class="fenetre"><h2>Application du téléphone</h2>
+        <p>Elle n'est pas encore installée : double-cliquez sur <b>Installer_Telephone.bat</b>, dans le dossier
+        du cockpit, et suivez les étapes.</p>
+        <div class="pied"><button class="btn" type="button" data-fermer>Fermer</button></div></div>`
+    : `<div class="fenetre"><h2>Ouvrir le cockpit sur l'iPhone</h2>
+        <p>Ce code contient la clé qui déchiffre vos données : ne le montrez qu'à votre téléphone.</p>
+        <div class="qr" id="qr">Préparation du code…</div>
+        <ol><li>Visez le code avec l'appareil photo de l'iPhone, puis touchez le lien qui apparaît : Safari s'ouvre.</li>
+          <li>Dans Safari, touchez <b>Partager</b>, puis <b>Sur l'écran d'accueil</b>.</li>
+          <li>L'icône Cockpit s'ouvre alors comme une application, PC éteint, et sans réseau avec les dernières données reçues.</li></ol>
+        <p style="margin-top:10px">Dernier envoi : ${esc(t.publie_le || "—")}${t.erreur ? ` · <span style="color:var(--crit)">dernier essai en échec : ${esc(t.erreur)}</span>` : ""}</p>
+        <div class="pied"><button class="btn" type="button" data-fermer>Fermer</button></div></div>`;
+  v.addEventListener("click", e=>{ if(e.target===v || e.target.closest("[data-fermer]")) fermer(); });
+  document.addEventListener("keydown", echap);
+  document.body.append(v);
+  v.querySelector("[data-fermer]").focus();
+  if(!t.installe) return;
+  try{
+    await chargerScript("https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js");
+    const q = qrcode(0, "M"); q.addData(t.lien); q.make();
+    $("#qr").innerHTML = q.createSvgTag({cellSize:6, margin:2, scalable:true});
+  }catch(_){ $("#qr").textContent = "Le code n'a pas pu être dessiné (connexion Internet ?) : fermez et réessayez."; }
+}
+$("#btn-tel").addEventListener("click", ouvrirTelephone);
+if(window.TELEPHONE) demarrerTelephone();
+</script>
