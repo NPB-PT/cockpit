@@ -296,6 +296,10 @@
   .jauge{height:8px; border-radius:980px; background:var(--accent-soft); position:relative; overflow:hidden}
   .jauge i{position:absolute; inset:0 auto 0 0; border-radius:980px; background:var(--accent)}
   .jauge.nue{background:none}                     
+  .jauges{display:grid; gap:4px}
+  .jauge.fine{height:6px; background:var(--hairline)}
+  .jauge.reel i{background:var(--serie-1)}
+  .jauge.fact i{background:var(--serie-2)}
   .segments{display:flex; gap:2px; height:8px}
   .segments i{flex-basis:0; min-width:3px; border-radius:980px}
   .legende{display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin:-6px 0 8px}
@@ -554,7 +558,7 @@
       <div class="duo">
         <section class="carte">
           <div class="carte-tete"><h2>Chantiers en cours</h2>
-            <p>Avancement = surface facturée ÷ surface vendue · survolez un chantier pour le détail</p></div>
+            <p>Réel = m² mis en tension ÷ m² vendus (saisis dans l'EXE) · facturé = m² facturés ÷ m² vendus · survolez un chantier pour le détail</p></div>
           <div class="carte-corps" id="tvx-encours"></div>
         </section>
         <section class="carte">
@@ -568,7 +572,8 @@
           <div class="defile"><table id="t-ch"><thead><tr>
             <th class="l" data-k="affaire">Chantier</th><th class="l" data-k="phase">Phase</th>
             <th data-k="dateContrat">Contrat</th><th data-k="surface">Surface vendue</th>
-            <th data-k="surfaceFacturee">Facturée</th><th data-k="avancement">Avancement</th>
+            <th data-k="surfaceTendue">Mis en tension</th><th data-k="avReel">Av. réel</th>
+            <th data-k="surfaceFacturee">Facturée</th><th data-k="avancement">Av. facturé</th>
             <th data-k="reste">Reste à facturer</th><th data-k="nBons">Bons livrés</th>
             <th data-k="derniereLiv">Dernière livraison</th>
           </tr></thead><tbody></tbody><tfoot></tfoot></table></div>
@@ -795,7 +800,11 @@ function lireClasseur(buf){
       dateOffre:dt(r["Date offre"]), dateContrat:dt(r["Date contrat"]),
       origineDate:(r["Origine date"]||"").trim(),
       surfaceFacturee:surfFact, facture, reste:ca-facture,
-      avancement: surface>0 ? surfFact/surface : null };
+      avancement: surface>0 ? surfFact/surface : null,
+      surfaceTendue:nb(r["Surface mise en tension (m2)"]), derniereTension:dt(r["Derniere mise en tension"]),
+      surfaceDessinee:nb(r["Surface niveaux dessines (m2)"]), ratioReel:nb(r["Toron reel (kg/m2)"]),
+      ratioChiffre:nb(r["Toron chiffre (kg/m2)"]), toronTerminaison:nb(r["Toron EXE a terminaison (kg)"]),
+      sansSurface:String(r["Niveaux sans surface"]??"").trim() };
   });
   const parRef = Object.fromEntries(affaires.map(a=>[a.reference,a]));
   const depenses = f("DEPENSES").filter(r=>r["Reference"]).map(r=>({
@@ -830,6 +839,10 @@ function lireClasseur(buf){
     a.pctFacture = a.ca>0 ? a.facture/a.ca : null;
     a.decalage = (a.pctFacture!=null&&a.avancement!=null) ? (a.pctFacture-a.avancement)*100 : null;
     a.position = a.facture-a.reel;
+    a.avReel = (a.surface>0 && a.surfaceTendue!=null) ? a.surfaceTendue/a.surface : null;
+    a.aFacturerM2 = a.surfaceTendue!=null ? a.surfaceTendue-a.surfaceFacturee : null;
+    a.aFacturerMad = (a.aFacturerM2!=null && a.pu) ? a.aFacturerM2*a.pu : null;
+    a.ecartRatio = (a.ratioReel!=null && a.ratioChiffre) ? a.ratioReel/a.ratioChiffre-1 : null;
   }
   const stock = f("STOCK").filter(r=>r["Code"]).map(r=>({
     code:r["Code"], article:(r["Article"]||"").trim(), unite:r["Unite"]||"",
@@ -1004,8 +1017,8 @@ const COLS = {
     surface:N_(), pu:N_(), ca:N_(), margeVendue:N_(1,true), margeReelle:N_(1,true)},
   "t-his": {decide_le:L_(c=>String(c.decide_le||"").slice(0,7), libMois, true), affaire:L_(),
     statut_maitre:L_(), statut:L_(), suite:L_()},
-  "t-ch": {affaire:L_(), phase:L_(), dateContrat:MOIS_("dateContrat"), surface:N_(), surfaceFacturee:N_(),
-    avancement:N_(0,true), reste:N_(), nBons:N_(), derniereLiv:MOIS_("derniereLiv")},
+  "t-ch": {affaire:L_(), phase:L_(), dateContrat:MOIS_("dateContrat"), surface:N_(), surfaceTendue:N_(),
+    avReel:N_(0,true), surfaceFacturee:N_(), avancement:N_(0,true), reste:N_(), nBons:N_(), derniereLiv:MOIS_("derniereLiv")},
   "t-perf": {affaire:L_(), avancement:N_(0,true), budget:N_(), reel:N_(), partReelle:N_(0,true)},
   "t-liv": {affaire:L_(x=>x.affaire||x.reference), date:MOIS_(), designation:L_(), quantite:N_(2), bl:L_()},
   "t-fac": {affaire:L_(), ca:N_(), facture:N_(), reste:N_(), pctFacture:N_(0,true), avancement:N_(0,true),
@@ -1569,8 +1582,18 @@ function chantiersTravaux(){
   });
 }
 function infoChantier(a){
-  const l = [[pct(a.avancement), "avancement facturé"],
+  const l = [a.avReel!=null
+      ? [pct(a.avReel), `avancement réel : ${fmt(a.surfaceTendue)} m² mis en tension`
+          + (a.derniereTension ? `, le dernier le ${leJour(a.derniereTension)}` : "")]
+      : ["—", "avancement réel à saisir dans l'EXE (m² mis en tension)"],
+    [pct(a.avancement), "avancement facturé"],
     [`${fmt(a.surfaceFacturee)} / ${fmt(a.surface)} m²`, "surface facturée / vendue"]];
+  if(a.aFacturerM2!=null && a.aFacturerM2>0)
+    l.push([a.aFacturerMad!=null ? `${fmt(a.aFacturerMad)} MAD` : `${fmt(a.aFacturerM2)} m²`,
+      `mis en tension, pas encore facturé (${fmt(a.aFacturerM2)} m²)`]);
+  if(a.ratioReel!=null) l.push([`${fmt(a.ratioReel, 2)} kg/m²`,
+    a.ratioChiffre ? `toron des niveaux dessinés · ${fmt(a.ratioChiffre, 2)} kg/m² au chiffrage` : "toron des niveaux dessinés"]);
+  if(a.toronTerminaison!=null) l.push([`${fmt(a.toronTerminaison)} kg`, "toron à terminaison (ratio réel sur le reste)"]);
   if(a.ca) l.push([`${fmt(a.reste)} MAD`, "reste à facturer, HT"]);
   if(a.dateContrat) l.push([leJour(a.dateContrat), ORIGINE_DATE[a.origineDate] || a.origineDate || "date du contrat"]);
   l.push(a.nLignes ? [pluriel(a.nBons, "bon"), `de livraison, le dernier le ${leJour(a.derniereLiv)}`]
@@ -1589,10 +1612,16 @@ function rendreTravaux(){
   const liv30 = D.livraisons.filter(x=>x.date && x.date<=auj && auj-x.date<=30*JOUR);
   const bons30 = new Set(liv30.map(x=>x.bl ? "b"+String(x.bl).trim() : "l"+x.reference+leJour(x.date))).size;
   const derLiv = D.livraisons.reduce((m,x)=>x.date && (!m || x.date>m) ? x.date : m, null);
+  const encR = enc.filter(a=>a.surfaceTendue!=null);
+  const sR = encR.reduce((s,a)=>s+a.surface,0), tR = encR.reduce((s,a)=>s+a.surfaceTendue,0),
+        fR = encR.reduce((s,a)=>s+a.surfaceFacturee,0);
   $("#k-tvx").innerHTML = [
     ["Chantiers en cours", fmt(enc.length), `${fmt(sEnc)} m² vendus`],
-    ["Avancement facturé", pct(sEnc ? sFac/sEnc : null),
-      `${fmt(sFac)} m² facturés · ${fmt(Math.max(0, sEnc-sFac))} m² restants`],
+    encR.length
+      ? ["Avancement réel", pct(sR ? tR/sR : null),
+          `${fmt(tR)} m² tendus · facturé ${pct(sR ? fR/sR : null)} · ${fmt(encR.length)}/${fmt(enc.length)} chantiers`]
+      : ["Avancement facturé", pct(sEnc ? sFac/sEnc : null),
+          `${fmt(sFac)} m² facturés · réel à saisir dans les EXE`],
     ["Achevés à solder", fmt(aSolder.length), aSolder.length ? `${fmt(resteSolder)} MAD HT à facturer`
       : ach.length ? `les ${fmt(ach.length)} chantiers achevés sont facturés` : "aucun chantier achevé"],
     ["Livraisons sur 30 jours", `${fmt(bons30)}<small>bon${bons30>1?"s":""}</small>`,
@@ -1602,17 +1631,20 @@ function rendreTravaux(){
   const avec = enc.filter(a=>a.surfaceFacturee>0).sort((x,y)=>(y.avancement??0)-(x.avancement??0));
   const sans = enc.filter(a=>!(a.surfaceFacturee>0))
     .sort((x,y)=>(x.dateContrat??Infinity)-(y.dateContrat??Infinity) || 0);
+  const barre = (x, cl, lib) => `<div class="jauge fine ${cl}" role="img" aria-label="${lib} : ${x==null ? "non saisi" : pct(x)}">`
+    + (x==null ? "" : `<i style="width:${(Math.min(1, Math.max(0, x))*100).toFixed(1)}%"></i>`) + `</div>`;
+  const jauges = a => `<div class="jauges">${barre(a.avReel, "reel", "Avancement réel")}${barre(a.avancement, "fact", "Avancement facturé")}</div>`;
   const ligne = a => {
     BULLES["ch:"+a.reference] = infoChantier(a);
-    const facture = a.surfaceFacturee>0;
+    const facture = a.surfaceFacturee>0, reel = a.avReel!=null;
     const sous = [a.reference, a.dateContrat ? "depuis "+ecoule(a.dateContrat) : "",
       a.phase!=="En cours" ? a.phase : "", facture && a.derniereLiv ? "livré le "+court(a.derniereLiv) : ""]
       .filter(Boolean).join(" · ");
     const tete = `<div class="ch" tabindex="0" data-bulle="ch:${esc(a.reference)}">
       <div class="nom"><b>${esc(a.affaire||a.reference)}</b><span>${esc(sous)}</span></div>`;
-    if(facture) return tete + `<div class="jauge" role="img" aria-label="Avancement facturé ${pct(a.avancement)}">
-        <i style="width:${(Math.min(1, a.avancement??0)*100).toFixed(1)}%"></i></div>
-      <div class="val"><b>${pct(a.avancement)}</b><span>${fmt(a.surfaceFacturee)} / ${fmt(a.surface)} m²</span></div></div>`;
+    if(facture || reel) return tete + jauges(a)
+      + `<div class="val"><b>${pct(reel ? a.avReel : a.avancement)}</b>
+        <span>${reel ? "réel · facturé "+pct(a.avancement) : "facturé · réel à saisir"}</span></div></div>`;
     const etat = a.nLignes ? `${pluriel(a.nBons, "bon")} livré${a.nBons>1?"s":""}, le dernier le ${court(a.derniereLiv)}`
       : a.nFactures ? `${pluriel(a.nFactures, "facture")} sans surface (acompte ?), rien de livré`
       : "ni livraison ni facture enregistrée";
@@ -1622,13 +1654,22 @@ function rendreTravaux(){
   const bloc = (titre, l) => l.length ? `<div class="ch-bloc"><h3 class="groupe">${titre}
       <span style="font-weight:400">${l.length}</span></h3>${l.map(ligne).join("")}</div>` : "";
   const soldes = ach.length - aSolder.length;
+  const legende = `<div class="legende"><span><i style="background:var(--serie-1)"></i>Réel : m² mis en tension</span>`
+    + `<span><i style="background:var(--serie-2)"></i>Facturé</span></div>`;
   $("#tvx-encours").innerHTML = (enc.length
-      ? bloc("Facturation commencée", avec) + bloc("Rien de facturé pour l'instant", sans)
+      ? legende + bloc("Facturation commencée", avec) + bloc("Rien de facturé pour l'instant", sans)
       : `<div class="pas-de">Aucun chantier en cours.</div>`)
     + `<div class="pied-carte"><span>${pluriel(ach.length, "chantier")} achevé${ach.length>1?"s":""}${
         ach.length ? `, dont ${fmt(soldes)} soldé${soldes>1?"s":""}` : ""}</span>
       <button class="btn" type="button" data-ouvrir="pli-ch">Voir les ${fmt(ch.length)} chantiers</button></div>`;
   const groupes = [];
+  const refsSolder = new Set(aSolder.map(a=>a.reference));
+  const tendusNonFactures = ch.filter(a=>!refsSolder.has(a.reference) && a.aFacturerM2!=null
+      && a.aFacturerM2 > Math.max(20, .02*a.surface))
+    .sort((x,y)=>(y.aFacturerMad??0)-(x.aFacturerMad??0) || y.aFacturerM2-x.aFacturerM2);
+  if(tendusNonFactures.length) groupes.push({cl:"b-warn", ic:"!", lib:"À facturer", titre:"Mis en tension, pas encore facturé",
+    items:tendusNonFactures.map(a=>({a, d:`${fmt(a.surfaceTendue)} m² tendus · ${fmt(a.surfaceFacturee)} facturés`,
+      v: a.aFacturerMad!=null ? `<b>${fmt(a.aFacturerMad)}</b> MAD` : `<b>${fmt(a.aFacturerM2)}</b> m²`}))});
   if(aSolder.length) groupes.push({cl:"b-warn", ic:"!", lib:"À facturer", titre:"Achevés, pas entièrement facturés",
     items:[...aSolder].sort((x,y)=>(y.reste||0)-(x.reste||0)).map(a=>({a,
       d:`${fmt(a.surfaceFacturee)} sur ${fmt(a.surface)} m² facturés`,
@@ -1644,6 +1685,11 @@ function rendreTravaux(){
     note:"Avenant à établir, ou surface vendue à corriger dans le recensement.",
     items:depasses.map(a=>({a, d:`${fmt(a.surfaceFacturee)} m² facturés pour ${fmt(a.surface)} vendus`,
       v:`<b>+${pct(a.avancement-1)}</b>`}))});
+  const acier = ch.filter(a=>a.ecartRatio!=null && a.ecartRatio > .10).sort((x,y)=>y.ecartRatio-x.ecartRatio);
+  if(acier.length) groupes.push({cl:"b-warn", ic:"!", lib:"À vérifier", titre:"Plus d'acier que chiffré",
+    note:"Toron au m² des niveaux dessinés (EXE), comparé au chiffrage.",
+    items:acier.map(a=>({a, d:`${fmt(a.ratioReel, 2)} kg/m² dessinés · ${fmt(a.ratioChiffre, 2)} chiffrés`,
+      v:`<b>+${pct(a.ecartRatio)}</b>`}))});
   const nAtt = new Set(groupes.flatMap(g=>g.items.map(it=>it.a.reference))).size;
   $("#tvx-att-sous").textContent = nAtt ? `${pluriel(nAtt, "chantier")} à regarder` : "Rien à signaler";
   $("#tvx-attention").innerHTML = htmlAttention(groupes,
@@ -1658,14 +1704,18 @@ function rendreTableChantiers(){
   $("#t-ch tbody").innerHTML = t.length ? t.map(a=>`<tr>
       <td class="l">${esc(a.affaire||a.reference)}<div class="sous">${esc(a.reference)} · ${esc(a.client)}</div></td>
       <td class="l">${esc(a.phase)}</td><td>${leJour(a.dateContrat)}</td>
-      <td>${fmt(a.surface)}</td><td>${a.surfaceFacturee ? fmt(a.surfaceFacturee) : "—"}</td>
+      <td>${fmt(a.surface)}</td><td>${a.surfaceTendue!=null ? fmt(a.surfaceTendue) : "—"}</td><td>${pct(a.avReel)}</td>
+      <td>${a.surfaceFacturee ? fmt(a.surfaceFacturee) : "—"}</td>
       <td>${pct(a.avancement)}</td><td>${a.ca ? fmt(a.reste) : "—"}</td>
       <td>${a.nLignes ? fmt(a.nBons) : "—"}</td><td>${leJour(a.derniereLiv)}</td></tr>`).join("")
-    : rien("t-ch", 9, "Aucun chantier décroché.");
+    : rien("t-ch", 11, "Aucun chantier décroché.");
   const s = t.reduce((x,a)=>x+a.surface,0), sf = t.reduce((x,a)=>x+a.surfaceFacturee,0);
+  const tt = t.filter(a=>a.surfaceTendue!=null), st = tt.reduce((x,a)=>x+a.surfaceTendue,0),
+        sv = tt.reduce((x,a)=>x+a.surface,0);
   $("#t-ch tfoot").innerHTML = t.length>1 ? `<tr><td class="l" colspan="3">${filtreActif("t-ch")
       ? `Total des ${t.length} chantiers affichés` : "Total"}</td>
-    <td>${fmt(s)}</td><td>${fmt(sf)}</td><td>${pct(s ? sf/s : null)}</td>
+    <td>${fmt(s)}</td><td>${tt.length ? fmt(st) : "—"}</td><td>${pct(sv ? st/sv : null)}</td>
+    <td>${fmt(sf)}</td><td>${pct(s ? sf/s : null)}</td>
     <td>${fmt(t.reduce((x,a)=>x+(a.ca ? a.reste : 0),0))}</td><td>${fmt(t.reduce((x,a)=>x+a.nBons,0))}</td><td></td></tr>` : "";
 }
 const qte = (q, u) => q==null ? "—" : `${fmt(q, q%1 ? 2 : 0)}${u ? " "+esc(u) : ""}`;
