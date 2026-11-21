@@ -508,7 +508,7 @@
           <div class="carte-corps" id="com-nego"></div>
         </section>
         <section class="carte">
-          <div class="carte-tete"><h2>Principaux clients</h2><p>Part du chiffre d'affaires décroché · survolez un client pour le détail</p></div>
+          <div class="carte-tete"><h2>Principaux clients</h2><p>Part du chiffre d'affaires gagné · survolez un client pour le détail</p></div>
           <div class="carte-corps" id="com-clients"></div>
         </section>
       </div>
@@ -710,9 +710,11 @@ const fmt = (n,d=0) => n==null||!isFinite(n) ? "—" : n.toLocaleString("fr-FR",
 const pct = (x,d=0) => x==null||!isFinite(x) ? "—" : (x*100).toFixed(d).replace(".",",")+" %";
 const norm = s => (s??"").toString().normalize("NFKD").replace(/[\u0300-\u036F]/g,"").trim().toUpperCase();
 const esc = s => String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const GAGNEE = "Gagn\u00E9e", PERDUE = "Perdue", EN_NEGO = "En n\u00E9gociation";
 const canon = s => { const n = norm(s);
-  return n.includes("DECROCH") ? (n.includes("NON") ? "Non d\u00E9croch\u00E9e" : "D\u00E9croch\u00E9e")
-       : n.includes("COURS") ? "En cours" : ""; };
+  return n.includes("DECROCH")||n.includes("GAGN") ? (n.includes("NON") ? PERDUE : GAGNEE)
+       : n.includes("PERDU") ? PERDUE
+       : n.includes("NEGO")||n.includes("COURS") ? EN_NEGO : ""; };
 const nb = v => {
   if(v==null||v==="") return null;
   if(typeof v==="number") return isFinite(v) ? v : null;
@@ -757,7 +759,7 @@ function ecoule(d){
 }
 let D=null, etat={vue:"fiabilite", com:"", cli:"", rech:"", mod:false, tr:false, vieux:false, tri:{}};
 const SERVEUR = {actif:false, classeur:null, statuts:[], suit:false, charge:null,
-                 valeurs:["En cours","Décrochée","Non décrochée"]};
+                 valeurs:[EN_NEGO, GAGNEE, PERDUE]};
 const relance = () => window.TELEPHONE ? "cliquez sur Actualiser dans le cockpit du PC"
   : SERVEUR.actif ? "cliquez sur Actualiser" : "relancez Lancer_Corrige.bat";
 const PALETTE=["#0071E3","#5AC8FA","#34C759","#FFCC00","#FF9500","#FF375F","#AF52DE","#8E8E93","#5E5CE6","#64D2FF"];
@@ -786,11 +788,11 @@ function lireClasseur(buf){
   const affaires = brut.filter(r=>r["Reference"]).map(r=>{
     const surface=nb(r["Surface (m2)"])??0, surfFact=nb(r["Surface facturee (m2)"])??0;
     const ca=nb(r["CA HT (MAD)"])??0, facture=nb(r["CA facture HT (MAD)"])??0;
-    const st=norm(r["Statut commercial"]);
+    const st=canon(r["Statut commercial"]);    // « decrochee » (nom interne) = Gagnée
     return { reference:r["Reference"], client:(r["Client"]||"").trim()||"—",
       affaire:(r["Affaire"]||"").trim(), commercial:(r["Commercial"]||"").trim()||"Non attribué",
-      statut:(r["Statut commercial"]||"").trim(), etatProjet:(r["Etat projet"]||"").trim(),
-      decrochee: st.includes("DECROCH")&&!st.includes("NON"), perdue: st.includes("NON DECROCH"),
+      statut:st||String(r["Statut commercial"]??"").trim(), etatProjet:(r["Etat projet"]||"").trim(),
+      decrochee: st===GAGNEE, perdue: st===PERDUE,
       clientBrut:String(r["Client"]??"").trim(), statutMoteur:String(r["Statut commercial"]??"").trim(),
       statutMaitre:String(("Statut fichier maitre" in r ? r["Statut fichier maitre"] : r["Statut commercial"])??"").trim(),
       origineStatut:String(r["Origine statut"]??"").trim(),
@@ -934,7 +936,7 @@ function rendreFiabilite(){
     ? "Les chiffres sont exploitables avec précaution."
     : "Les marges présentées ne peuvent pas encore servir de base de décision.";
   $("#verdict-texte").textContent =
-    `${pct(n.partMesuree)} du coût des affaires décrochées repose sur des pièces réelles ; `
+    `${pct(n.partMesuree)} du coût des affaires gagnées repose sur des pièces réelles ; `
     + `le reste (${fmt(n.totalCout-n.mesure)} MAD) est le budget de chiffrage repris faute de justificatif. `
     + `${n.nBloq} anomalie${n.nBloq>1?"s":""} bloquante${n.nBloq>1?"s":""} et ${n.nAvert} point${n.nAvert>1?"s":""} de vigilance sont relevés.`;
   $("#anneaux").innerHTML = n.dimensions.map(d=>
@@ -1207,9 +1209,10 @@ function brancherPanneau(){
   addEventListener("resize", ()=>{ if(PAN.btn) placerFiltre(); });
 }
 function fixerStatut(a, statut){
-  a.statut = statut; const st = norm(statut);
-  a.decrochee = st.includes("DECROCH") && !st.includes("NON");
-  a.perdue = st.includes("NON DECROCH");
+  const c = canon(statut);
+  a.statut = c || String(statut??"").trim();
+  a.decrochee = c===GAGNEE;
+  a.perdue = c===PERDUE;
 }
 function appliquerStatuts(){
   if(!D) return;
@@ -1366,7 +1369,7 @@ function filtrees(){
     (!etat.com||a.commercial===etat.com) && (!etat.cli||a.client===etat.cli) &&
     (!etat.rech||norm(a.affaire+" "+a.client+" "+a.reference).includes(norm(etat.rech))));
 }
-const enNegociation = a => !a.decrochee && !a.perdue && canon(a.statut)==="En cours";
+const enNegociation = a => !a.decrochee && !a.perdue && canon(a.statut)===EN_NEGO;
 const dormante = a => enNegociation(a) && !!a.dateOffre && Date.now()-a.dateOffre > 183*JOUR;
 function statsCom(l){
   const par={};
@@ -1409,7 +1412,7 @@ function rendreCommercial(){
   const dorm=l.filter(dormante).sort((x,y)=>(y.ca||0)-(x.ca||0)), atr=l.filter(aTrancher);
   $("#k-com").innerHTML = [
     ["Transformation", pct(sG+sP>0 ? sG/(sG+sP) : null), `${fmt(sG)} m² gagnés sur ${fmt(sG+sP)} m² tranchés`],
-    ["CA décroché", `${fmt(ca)}<small>MAD</small>`,
+    ["CA gagné", `${fmt(ca)}<small>MAD</small>`,
       `${pluriel(dec.length, "affaire")} · ${fmt(sG>0 ? ca/sG : null)} MAD/m² en moyenne`],
     ["Marge vendue", pct(margeP,1),
       avecMarge.length ? `moyenne pondérée par le CA, ${pluriel(avecMarge.length, "affaire")}` : "aucune marge annoncée"],
@@ -1443,7 +1446,7 @@ function rendreCommercial(){
   };
   const nPerdues = sansSucces.reduce((t,s)=>t+s.perdues,0);
   $("#com-perf").innerHTML = parPerf.length ? parPerf.map(ligneCom).join("")
-    + (sansSucces.length ? `<p class="note-att" style="margin:10px 0 0">Aucune affaire gagnée ni en cours :
+    + (sansSucces.length ? `<p class="note-att" style="margin:10px 0 0">Aucune affaire gagnée ni en négociation :
         ${sansSucces.map(s=>esc(s.nom)).join(", ")} (${pluriel(nPerdues, "affaire")} perdue${nPerdues>1?"s":""}).</p>` : "")
     + `<div class="pied-carte"><span>À droite : transformation et m² gagnés · <span style="color:var(--warn)">∗</span> moins de 3 affaires tranchées</span>
         <button class="btn" type="button" data-ouvrir="pli-com">Détail par commercial</button></div>`
@@ -1460,7 +1463,7 @@ function rendreCommercial(){
     items:atr.map(a=>({a, d:[a.client!=="—" ? a.client : "", a.surface ? `${fmt(a.surface)} m²` : ""].filter(Boolean).join(" · "),
       v: SERVEUR.actif ? selectStatut(a, "Choisir…") : `<span class="badge b-neutre">${esc(a.statut)||"à trancher"}</span>`}))});
   if(dorm.length) groupes.push({cl:"b-warn", ic:"!", lib:"À relancer", titre:"Sans réponse depuis plus de 6 mois",
-    note:`${pluriel(dorm.length, "offre")}, ${fmt(dorm.reduce((s,a)=>s+a.ca,0))} MAD HT : relancer, ou classer « Non décrochée ». Les plus importantes :`,
+    note:`${pluriel(dorm.length, "offre")}, ${fmt(dorm.reduce((s,a)=>s+a.ca,0))} MAD HT : relancer, ou classer « Perdue ». Les plus importantes :`,
     items:dorm.slice(0,3).map(a=>({a, d:`${a.client} · il y a ${ecoule(a.dateOffre)}`, v:a.ca ? `<b>${fmt(a.ca)}</b> MAD` : "—"})),
     plus:`<button class="btn" type="button" data-voir="vieux">${dorm.length>3 ? `Voir les ${dorm.length} offres dans le tableau` : "Les voir dans le tableau"}</button>`});
   const nAtt = new Set([...atr, ...dorm].map(a=>a.reference)).size + (D.orphelins?.length||0);
@@ -1495,19 +1498,19 @@ function rendreCommercial(){
   $("#com-clients").innerHTML = topC.length ? topC.map(c=>{
       const t = c.gagnees+c.perdues;
       BULLES["cl:"+c.nom] = {titre:c.nom, lignes:[
-        [`${fmt(c.ca)} MAD`, "chiffre d'affaires décroché, HT"], [pct(c.ca/totCa), "du CA décroché"],
+        [`${fmt(c.ca)} MAD`, "chiffre d'affaires gagné, HT"], [pct(c.ca/totCa), "du CA gagné"],
         [`${c.gagnees} sur ${t}`, "affaires gagnées sur tranchées"],
         [pct(c.sT ? c.sG/c.sT : null), "des m² tranchés gagnés (accrochage)"],
         ...(c.nego ? [[pluriel(c.nego, "offre"), "en négociation"]] : [])]};
       return `<div class="ch large" tabindex="0" data-bulle="cl:${esc(c.nom)}">
         <div class="nom"><b>${esc(c.nom)}</b><span>${c.gagnees} gagnée${c.gagnees>1?"s":""} sur ${t} tranchée${t>1?"s":""}${
           c.nego ? ` · ${c.nego} en négo` : ""}</span></div>
-        <div class="jauge nue" role="img" aria-label="${esc(pct(c.ca/totCa)+" du CA décroché")}">
+        <div class="jauge nue" role="img" aria-label="${esc(pct(c.ca/totCa)+" du CA gagné")}">
           <i style="width:${(c.ca/maxCl*100).toFixed(1)}%"></i></div>
         <div class="val"><b>${pct(c.ca/totCa)}</b><span>${fmt(c.ca)} MAD</span></div></div>`;
     }).join("") + `<div class="pied-carte"><span>${clients.length>2 ? `Les 3 premiers pèsent <b style="color:var(--ink)">${
-        pct(clients.slice(0,3).reduce((s,c)=>s+c.ca,0)/totCa)}</b> du CA décroché · ` : ""}${pluriel(nEnt, "entreprise")} consultée${nEnt>1?"s":""}</span></div>`
-    : `<div class="pas-de">Aucune affaire décrochée pour ce choix.</div>`;
+        pct(clients.slice(0,3).reduce((s,c)=>s+c.ca,0)/totCa)}</b> du CA gagné · ` : ""}${pluriel(nEnt, "entreprise")} consultée${nEnt>1?"s":""}</span></div>`
+    : `<div class="pas-de">Aucune affaire gagnée pour ce choix.</div>`;
   const tri=trier(filtrer("t-com",stats),"t-com",{k:"surfaceGagnee",s:-1});
   $("#t-com tbody").innerHTML = tri.length ? tri.map(s=>{
     const bt = s.transformation>=.5?"b-pos":s.transformation>=.25?"b-warn":"b-crit";
@@ -1699,7 +1702,7 @@ function rendreTravaux(){
 function rendreTableChantiers(){
   const ch = chantiersTravaux(), nEnc = ch.filter(a=>a.enCours).length, nAch = ch.length-nEnc;
   const t = trier(filtrer("t-ch", ch), "t-ch", {k:"dateContrat", s:-1});
-  $("#n-ch").textContent = `${pluriel(ch.length, "chantier")} décroché${ch.length>1?"s":""} : ${fmt(nEnc)} en cours, `
+  $("#n-ch").textContent = `${pluriel(ch.length, "chantier")} gagné${ch.length>1?"s":""} : ${fmt(nEnc)} en cours, `
     + `${fmt(nAch)} achevé${nAch>1?"s":""} · surface, facturation et livraisons`;
   $("#t-ch tbody").innerHTML = t.length ? t.map(a=>`<tr>
       <td class="l">${esc(a.affaire||a.reference)}<div class="sous">${esc(a.reference)} · ${esc(a.client)}</div></td>
@@ -1708,7 +1711,7 @@ function rendreTableChantiers(){
       <td>${a.surfaceFacturee ? fmt(a.surfaceFacturee) : "—"}</td>
       <td>${pct(a.avancement)}</td><td>${a.ca ? fmt(a.reste) : "—"}</td>
       <td>${a.nLignes ? fmt(a.nBons) : "—"}</td><td>${leJour(a.derniereLiv)}</td></tr>`).join("")
-    : rien("t-ch", 11, "Aucun chantier décroché.");
+    : rien("t-ch", 11, "Aucun chantier gagné.");
   const s = t.reduce((x,a)=>x+a.surface,0), sf = t.reduce((x,a)=>x+a.surfaceFacturee,0);
   const tt = t.filter(a=>a.surfaceTendue!=null), st = tt.reduce((x,a)=>x+a.surfaceTendue,0),
         sv = tt.reduce((x,a)=>x+a.surface,0);
@@ -1862,7 +1865,7 @@ function rendreFacturation(){
         <div class="val"><b>${fmt(a.reste)}</b><span>${pct(a.pctFacture)} facturé</span></div></div>`;
     }).join("") + `<div class="pied-carte"><span>Jauge : part du marché déjà facturée</span>
       <button class="btn" type="button" data-voir="chantiers">Voir les ${pluriel(dec.length, "chantier")}</button></div>`
-    : `<div class="pas-de">Tous les chantiers décrochés sont entièrement facturés.</div>`;
+    : `<div class="pas-de">Tous les chantiers gagnés sont entièrement facturés.</div>`;
   const groupes=[];
   const aSolder=dec.filter(a=>a.surface>0 && phaseDe(a)==="Achevé" && (a.avancement??0)<.95).sort((x,y)=>y.reste-x.reste);
   if(aSolder.length) groupes.push({cl:"b-warn", ic:"!", lib:"À facturer", titre:"Chantiers achevés pas entièrement facturés",
@@ -1887,14 +1890,14 @@ function rendreFacturation(){
   $("#fac-attention").innerHTML = htmlAttention(groupes,
     "Rien à signaler : achevés facturés, factures datées, pièces cohérentes.");
   const tf=trier(filtrer("t-fac",dec),"t-fac",{k:"reste",s:-1});
-  $("#n-fac-ch").textContent = `${pluriel(dec.length, "chantier")} décroché${dec.length>1?"s":""} · marché, facturé, reste, écart montant / surface`;
+  $("#n-fac-ch").textContent = `${pluriel(dec.length, "chantier")} gagné${dec.length>1?"s":""} · marché, facturé, reste, écart montant / surface`;
   $("#t-fac tbody").innerHTML = tf.length ? tf.map(a=>{
     const e=a.decalage;
     return `<tr><td class="l">${esc(a.affaire||a.reference)}<div class="sous">${esc(a.reference)}</div></td>
       <td>${fmt(a.ca)}</td><td>${fmt(a.facture)}</td><td>${fmt(a.reste)}</td>
       <td>${pct(a.pctFacture)}</td><td>${pct(a.avancement)}</td>
       <td${e!=null && Math.abs(e)<=5 ? ` style="color:var(--muted)"` : ""}>${e==null ? "—" : (e>0?"+":"")+e.toFixed(0)+" pts"}</td></tr>`;
-  }).join("") : rien("t-fac", 7, "Aucun chantier décroché.");
+  }).join("") : rien("t-fac", 7, "Aucun chantier gagné.");
   const tca=tf.reduce((s,a)=>s+a.ca,0), tfa=tf.reduce((s,a)=>s+a.facture,0);
   $("#t-fac tfoot").innerHTML = tf.length ? `<tr><td class="l">${filtreActif("t-fac")?`Total des ${tf.length} lignes affichées`:"Total"}</td>
     <td>${fmt(tca)}</td><td>${fmt(tfa)}</td><td>${fmt(tca-tfa)}</td><td>${pct(tca?tfa/tca:null)}</td><td></td><td></td></tr>` : "";
@@ -2108,7 +2111,7 @@ function rendre(){
   else rendreFacturation();
   rendreBandeau();
   const dec=D.affaires.filter(a=>a.decrochee).length;
-  $("#pied").textContent = `${D.affaires.length} affaires · ${dec} décrochées · ${D.factures.length} factures · `
+  $("#pied").textContent = `${D.affaires.length} affaires · ${dec} gagnées · ${D.factures.length} factures · `
     + `${D.livraisons.length} livraisons · ${D.controles.length} constats`;
 }
 function ouvrir(v){
@@ -2131,7 +2134,7 @@ $("#f-mod").addEventListener("click",()=>basculer("mod"));
 $("#f-tr").addEventListener("click",()=>basculer("tr"));
 $("#f-vieux").addEventListener("click",()=>basculer("vieux"));
 const VOIR = {
-  nego:      ()=>{ etat.mod=etat.tr=etat.vieux=false; FILTRE["t-aff"]={statut:{sel:new Set(["En cours"])}}; return ["pli-aff", rendreCommercial]; },
+  nego:      ()=>{ etat.mod=etat.tr=etat.vieux=false; FILTRE["t-aff"]={statut:{sel:new Set([EN_NEGO])}}; return ["pli-aff", rendreCommercial]; },
   vieux:     ()=>{ etat.mod=etat.tr=false; etat.vieux=true; delete FILTRE["t-aff"]; return ["pli-aff", rendreCommercial]; },
   sansdate:  ()=>{ FILTRE["t-detail"]={date:{sel:new Set([""])}}; return ["pli-detail", rendreFacturation]; },
   code:      ()=>{ FILTRE["t-detail"]={coherence:{sel:new Set(["Code à vérifier"])}}; return ["pli-detail", rendreFacturation]; },
